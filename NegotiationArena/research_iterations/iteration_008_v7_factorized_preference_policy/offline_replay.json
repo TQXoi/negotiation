@@ -1,0 +1,4914 @@
+{
+  "method": "framework_v7_factorized_preference_policy",
+  "model_calls": 0,
+  "source_posterior_validation": "Iteration 007 exact replay validated all 553 V5 decision posterior summaries with zero mismatch before this V7 shadow replay.",
+  "causal_limit": "One-step actions are evaluated on fixed V5 trajectories; no counterfactual reward is claimed after an action flip.",
+  "settings": [
+    {
+      "setting": "buyer",
+      "source": "arena_runs/formal_belief_matrix_qwen30b_5x20_20260812/buyer/framework_v5",
+      "decisions": 120,
+      "v7_vs_v5_action_flips": 25,
+      "intervention_decisions": 100,
+      "flip_oracle": 100,
+      "v7_proposals": 8,
+      "flip_frozen": 6,
+      "flip_wrong_confident": 6,
+      "flip_shuffled": 6,
+      "flip_policy_uniform": 1,
+      "flip_policy_shuffled": 2,
+      "action_flip_rates": {
+        "frozen": 0.06,
+        "wrong_confident": 0.06,
+        "shuffled": 0.06,
+        "oracle": 1.0,
+        "policy_uniform": 0.01,
+        "policy_shuffled": 0.02
+      },
+      "final_preference_estimate": 42.705933,
+      "final_response_policy": {
+        "rationality_scale": 1.136031,
+        "acceptance_bias": -0.024853,
+        "counter_propensity": 0.712644,
+        "normalized_entropy": 0.999471,
+        "surprise_resets": 0
+      },
+      "examples": [
+        {
+          "run": 1,
+          "episode": 1,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 9.0,
+            "mean": 45.853545,
+            "q90": 87.0,
+            "normalized_entropy": 0.995494,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": -0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.997371
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 2,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 48"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 49"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 55"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 55"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 55"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 49"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 49"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 9.0,
+            "mean": 43.72464,
+            "q90": 84.0,
+            "normalized_entropy": 0.988697,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": 0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.993406
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 8.289007,
+            "cvar90_particle_regret": 34.667354,
+            "normalized_particle_regret": 0.807037,
+            "regret_weight": 0.346044,
+            "regret_penalty": 2.314873,
+            "belief_usable_value": 5.974134
+          }
+        },
+        {
+          "run": 1,
+          "episode": 3,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 16.0,
+            "mean": 51.512829,
+            "q90": 87.0,
+            "normalized_entropy": 0.96553,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.145734,
+              "acceptance_bias": -0.026797,
+              "counter_propensity": 0.719152,
+              "normalized_entropy": 0.998692,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.979346
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 4,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 22.0,
+            "mean": 53.900516,
+            "q90": 87.0,
+            "normalized_entropy": 0.931851,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.146592,
+              "acceptance_bias": -0.057904,
+              "counter_propensity": 0.731044,
+              "normalized_entropy": 0.995007,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.958163
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 5,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 55"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 55"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 55"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 52"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 52"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 15.0,
+            "mean": 49.802446,
+            "q90": 84.0,
+            "normalized_entropy": 0.942349,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.143636,
+              "acceptance_bias": -0.048264,
+              "counter_propensity": 0.724523,
+              "normalized_entropy": 0.997083,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.965152
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 5.878,
+            "cvar90_particle_regret": 35.684436,
+            "normalized_particle_regret": 0.858574,
+            "regret_weight": 0.329822,
+            "regret_penalty": 1.664513,
+            "belief_usable_value": 4.213488
+          }
+        },
+        {
+          "run": 1,
+          "episode": 6,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 23.0,
+            "mean": 52.592766,
+            "q90": 84.0,
+            "normalized_entropy": 0.892116,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.140283,
+              "acceptance_bias": -0.086807,
+              "counter_propensity": 0.73775,
+              "normalized_entropy": 0.99112,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.933363
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 7,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 52"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 52"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 52"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 52"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 52"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 52"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 52"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 15.0,
+            "mean": 48.700037,
+            "q90": 82.0,
+            "normalized_entropy": 0.921485,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.143053,
+              "acceptance_bias": -0.072497,
+              "counter_propensity": 0.729305,
+              "normalized_entropy": 0.994681,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.95198
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 8,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 12.0,
+            "mean": 46.104032,
+            "q90": 80.0,
+            "normalized_entropy": 0.933581,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.143229,
+              "acceptance_bias": -0.060296,
+              "counter_propensity": 0.723814,
+              "normalized_entropy": 0.996628,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.959847
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 9,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 11.0,
+            "mean": 44.768801,
+            "q90": 79.0,
+            "normalized_entropy": 0.938577,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.141194,
+              "acceptance_bias": -0.050751,
+              "counter_propensity": 0.720472,
+              "normalized_entropy": 0.997711,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.963213
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 10,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 10.0,
+            "mean": 43.8799,
+            "q90": 78.0,
+            "normalized_entropy": 0.942669,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.1395,
+              "acceptance_bias": -0.042824,
+              "counter_propensity": 0.718006,
+              "normalized_entropy": 0.998411,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.965892
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 11,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 10.0,
+            "mean": 43.272176,
+            "q90": 78.0,
+            "normalized_entropy": 0.946076,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.138119,
+              "acceptance_bias": -0.036239,
+              "counter_propensity": 0.716119,
+              "normalized_entropy": 0.998879,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.968075
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 12,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 10.0,
+            "mean": 42.469539,
+            "q90": 78.0,
+            "normalized_entropy": 0.95007,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.137847,
+              "acceptance_bias": -0.029988,
+              "counter_propensity": 0.714273,
+              "normalized_entropy": 0.999245,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.970557
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 13,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 9.0,
+            "mean": 42.275103,
+            "q90": 78.0,
+            "normalized_entropy": 0.952703,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.136818,
+              "acceptance_bias": -0.025472,
+              "counter_propensity": 0.713119,
+              "normalized_entropy": 0.999457,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.972182
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 14,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 9.0,
+            "mean": 42.119145,
+            "q90": 78.0,
+            "normalized_entropy": 0.954686,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.136006,
+              "acceptance_bias": -0.021699,
+              "counter_propensity": 0.712174,
+              "normalized_entropy": 0.999606,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.9734
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 15,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 9.0,
+            "mean": 41.993087,
+            "q90": 78.0,
+            "normalized_entropy": 0.956204,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.135366,
+              "acceptance_bias": -0.018529,
+              "counter_propensity": 0.711388,
+              "normalized_entropy": 0.999713,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.97433
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 16,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 9.0,
+            "mean": 41.890816,
+            "q90": 78.0,
+            "normalized_entropy": 0.957384,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.134863,
+              "acceptance_bias": -0.015855,
+              "counter_propensity": 0.710728,
+              "normalized_entropy": 0.999789,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.97505
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 17,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 9.0,
+            "mean": 41.807701,
+            "q90": 78.0,
+            "normalized_entropy": 0.95831,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.134469,
+              "acceptance_bias": -0.01359,
+              "counter_propensity": 0.710168,
+              "normalized_entropy": 0.999844,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.975614
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 18,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 9.0,
+            "mean": 41.7401,
+            "q90": 78.0,
+            "normalized_entropy": 0.959045,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.134162,
+              "acceptance_bias": -0.011665,
+              "counter_propensity": 0.709692,
+              "normalized_entropy": 0.999885,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.97606
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 19,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 9.0,
+            "mean": 41.685086,
+            "q90": 78.0,
+            "normalized_entropy": 0.959633,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133924,
+              "acceptance_bias": -0.010026,
+              "counter_propensity": 0.709284,
+              "normalized_entropy": 0.999915,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.976415
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 20,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 47"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 9.0,
+            "mean": 41.724626,
+            "q90": 78.0,
+            "normalized_entropy": 0.959046,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133733,
+              "acceptance_bias": -0.008773,
+              "counter_propensity": 0.708974,
+              "normalized_entropy": 0.999934,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.976081
+          },
+          "chosen_belief_use": null
+        }
+      ]
+    },
+    {
+      "setting": "seller",
+      "source": "arena_runs/formal_belief_matrix_qwen30b_5x20_20260812/seller/framework_v5",
+      "decisions": 114,
+      "intervention_decisions": 100,
+      "flip_wrong_confident": 32,
+      "flip_shuffled": 23,
+      "flip_oracle": 32,
+      "v7_vs_v5_action_flips": 22,
+      "v7_proposals": 21,
+      "flip_frozen": 21,
+      "action_flip_rates": {
+        "frozen": 0.21,
+        "wrong_confident": 0.32,
+        "shuffled": 0.23,
+        "oracle": 0.32,
+        "policy_uniform": 0.0,
+        "policy_shuffled": 0.0
+      },
+      "final_preference_estimate": 57.426232,
+      "final_response_policy": {
+        "rationality_scale": 1.155028,
+        "acceptance_bias": -0.065464,
+        "counter_propensity": 0.723076,
+        "normalized_entropy": 0.996207,
+        "surprise_resets": 0
+      },
+      "examples": [
+        {
+          "run": 1,
+          "episode": 2,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 100"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 73"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 59"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 14.0,
+            "mean": 57.853044,
+            "q90": 92.0,
+            "normalized_entropy": 0.987011,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": -0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.992423
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 5,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 64"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 63"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 100"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 59"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 63"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 63"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 19.0,
+            "mean": 61.825544,
+            "q90": 93.0,
+            "normalized_entropy": 0.96506,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": 0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.979616
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 11.507233,
+            "cvar90_particle_regret": 24.276801,
+            "normalized_particle_regret": 0.678426,
+            "regret_weight": 0.337771,
+            "regret_penalty": 2.636909,
+            "belief_usable_value": 8.870324
+          }
+        },
+        {
+          "run": 2,
+          "episode": 2,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 100"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 73"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 59"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 14.0,
+            "mean": 57.853044,
+            "q90": 92.0,
+            "normalized_entropy": 0.987011,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": -0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.992423
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 2,
+          "episode": 4,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 63"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 63"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 100"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 63"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 63"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 18.0,
+            "mean": 61.046485,
+            "q90": 93.0,
+            "normalized_entropy": 0.971201,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": -0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.983199
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 11.374854,
+            "cvar90_particle_regret": 24.674936,
+            "normalized_particle_regret": 0.684468,
+            "regret_weight": 0.33992,
+            "regret_penalty": 2.646526,
+            "belief_usable_value": 8.728328
+          }
+        },
+        {
+          "run": 2,
+          "episode": 7,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 62"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 100"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 59"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 18.0,
+            "mean": 58.784543,
+            "q90": 90.0,
+            "normalized_entropy": 0.948636,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.142431,
+              "acceptance_bias": -0.02695,
+              "counter_propensity": 0.713738,
+              "normalized_entropy": 0.999348,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.969763
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 9.865483,
+            "cvar90_particle_regret": 25.530903,
+            "normalized_particle_regret": 0.721286,
+            "regret_weight": 0.332023,
+            "regret_penalty": 2.362616,
+            "belief_usable_value": 7.502867
+          }
+        },
+        {
+          "run": 2,
+          "episode": 9,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 63"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 62"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 59"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 100"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 59"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 62"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 62"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 20.0,
+            "mean": 60.674292,
+            "q90": 91.0,
+            "normalized_entropy": 0.946179,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.139702,
+              "acceptance_bias": -0.019989,
+              "counter_propensity": 0.711131,
+              "normalized_entropy": 0.999689,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.968472
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 10.938587,
+            "cvar90_particle_regret": 24.651837,
+            "normalized_particle_regret": 0.692654,
+            "regret_weight": 0.331163,
+            "regret_penalty": 2.509104,
+            "belief_usable_value": 8.429484
+          }
+        },
+        {
+          "run": 2,
+          "episode": 10,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 100"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 59"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 17.0,
+            "mean": 55.061353,
+            "q90": 82.0,
+            "normalized_entropy": 0.911851,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.143822,
+              "acceptance_bias": -0.063305,
+              "counter_propensity": 0.725469,
+              "normalized_entropy": 0.996189,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.946988
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 2,
+          "episode": 12,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 61"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 100"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 59"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 20.0,
+            "mean": 58.725687,
+            "q90": 89.0,
+            "normalized_entropy": 0.924298,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.140136,
+              "acceptance_bias": -0.046553,
+              "counter_propensity": 0.718314,
+              "normalized_entropy": 0.998265,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.955114
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 9.760452,
+            "cvar90_particle_regret": 24.911304,
+            "normalized_particle_regret": 0.71849,
+            "regret_weight": 0.323504,
+            "regret_penalty": 2.268666,
+            "belief_usable_value": 7.491786
+          }
+        },
+        {
+          "run": 2,
+          "episode": 14,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 62"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 61"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 59"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 100"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 59"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 61"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 61"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 21.0,
+            "mean": 60.521047,
+            "q90": 90.0,
+            "normalized_entropy": 0.929499,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.138078,
+              "acceptance_bias": -0.03504,
+              "counter_propensity": 0.714717,
+              "normalized_entropy": 0.999088,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.958491
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 10.480838,
+            "cvar90_particle_regret": 24.845228,
+            "normalized_particle_regret": 0.703311,
+            "regret_weight": 0.325325,
+            "regret_penalty": 2.398064,
+            "belief_usable_value": 8.082775
+          }
+        },
+        {
+          "run": 2,
+          "episode": 15,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 62"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 62"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 59"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 100"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 59"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 62"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 62"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 22.0,
+            "mean": 61.030082,
+            "q90": 91.0,
+            "normalized_entropy": 0.931251,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.137303,
+              "acceptance_bias": -0.030442,
+              "counter_propensity": 0.713522,
+              "normalized_entropy": 0.999323,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.959611
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 10.724995,
+            "cvar90_particle_regret": 24.037048,
+            "normalized_particle_regret": 0.691474,
+            "regret_weight": 0.325938,
+            "regret_penalty": 2.417172,
+            "belief_usable_value": 8.307823
+          }
+        },
+        {
+          "run": 2,
+          "episode": 16,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 62"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 62"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 100"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 62"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 62"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 22.0,
+            "mean": 61.161187,
+            "q90": 91.0,
+            "normalized_entropy": 0.93571,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.136226,
+              "acceptance_bias": -0.025893,
+              "counter_propensity": 0.712491,
+              "normalized_entropy": 0.999513,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.962291
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 10.729371,
+            "cvar90_particle_regret": 24.239342,
+            "normalized_particle_regret": 0.693172,
+            "regret_weight": 0.327498,
+            "regret_penalty": 2.435704,
+            "belief_usable_value": 8.293666
+          }
+        },
+        {
+          "run": 3,
+          "episode": 6,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 64"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 64"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 100"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 59"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 64"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 64"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 20.0,
+            "mean": 62.406226,
+            "q90": 93.0,
+            "normalized_entropy": 0.963908,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": 0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.978945
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 12.038317,
+            "cvar90_particle_regret": 23.319293,
+            "normalized_particle_regret": 0.659527,
+            "regret_weight": 0.337368,
+            "regret_penalty": 2.678564,
+            "belief_usable_value": 9.359753
+          }
+        },
+        {
+          "run": 3,
+          "episode": 11,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 65"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 65"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 100"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 62"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 65"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 65"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 20.0,
+            "mean": 62.933016,
+            "q90": 93.0,
+            "normalized_entropy": 0.954256,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": 0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.973314
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 12.517746,
+            "cvar90_particle_regret": 22.272527,
+            "normalized_particle_regret": 0.640194,
+            "regret_weight": 0.33399,
+            "regret_penalty": 2.676521,
+            "belief_usable_value": 9.841225
+          }
+        },
+        {
+          "run": 3,
+          "episode": 13,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 62"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 100"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            },
+            "oracle": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 18.0,
+            "mean": 58.372085,
+            "q90": 88.0,
+            "normalized_entropy": 0.932844,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.14632,
+              "acceptance_bias": -0.035104,
+              "counter_propensity": 0.716634,
+              "normalized_entropy": 0.998802,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.960323
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 3,
+          "episode": 15,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 63"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 63"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 100"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 60"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 62"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 63"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 63"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 20.0,
+            "mean": 60.6726,
+            "q90": 90.0,
+            "normalized_entropy": 0.935878,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.142379,
+              "acceptance_bias": -0.025893,
+              "counter_propensity": 0.712803,
+              "normalized_entropy": 0.999449,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.962363
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 11.293997,
+            "cvar90_particle_regret": 22.864046,
+            "normalized_particle_regret": 0.669361,
+            "regret_weight": 0.327557,
+            "regret_penalty": 2.476252,
+            "belief_usable_value": 8.817745
+          }
+        },
+        {
+          "run": 4,
+          "episode": 1,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 59"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 12.0,
+            "mean": 54.750775,
+            "q90": 91.0,
+            "normalized_entropy": 0.994935,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": 0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.997045
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 4,
+          "episode": 2,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 59"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 15.0,
+            "mean": 57.159993,
+            "q90": 92.0,
+            "normalized_entropy": 0.988422,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": 0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.993246
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 4,
+          "episode": 3,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 59"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 100"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 59"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 58"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 17.0,
+            "mean": 59.087663,
+            "q90": 92.0,
+            "normalized_entropy": 0.979752,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": -0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.988188
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 8.657448,
+            "cvar90_particle_regret": 28.919882,
+            "normalized_particle_regret": 0.76961,
+            "regret_weight": 0.342913,
+            "regret_penalty": 2.284781,
+            "belief_usable_value": 6.372667
+          }
+        },
+        {
+          "run": 4,
+          "episode": 4,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 56"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 100"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 59"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 53"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 15.0,
+            "mean": 52.027487,
+            "q90": 84.0,
+            "normalized_entropy": 0.956831,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.143448,
+              "acceptance_bias": -0.029687,
+              "counter_propensity": 0.71955,
+              "normalized_entropy": 0.998588,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.974228
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 5.667829,
+            "cvar90_particle_regret": 30.022499,
+            "normalized_particle_regret": 0.841194,
+            "regret_weight": 0.334891,
+            "regret_penalty": 1.596674,
+            "belief_usable_value": 4.071155
+          }
+        },
+        {
+          "run": 4,
+          "episode": 5,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 57"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 54"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 100"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 50"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 59"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 54"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives ZUP: 54"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_reservation",
+            "q10": 17.0,
+            "mean": 54.711144,
+            "q90": 87.0,
+            "normalized_entropy": 0.956836,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.140518,
+              "acceptance_bias": -0.023989,
+              "counter_propensity": 0.716082,
+              "normalized_entropy": 0.999201,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.974486
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 6.398981,
+            "cvar90_particle_regret": 30.699034,
+            "normalized_particle_regret": 0.827511,
+            "regret_weight": 0.334893,
+            "regret_penalty": 1.773333,
+            "belief_usable_value": 4.625648
+          }
+        }
+      ]
+    },
+    {
+      "setting": "resource_first",
+      "source": "arena_runs/formal_belief_matrix_qwen30b_5x20_20260812/resource_first/framework_v5",
+      "decisions": 186,
+      "v7_proposals": 142,
+      "intervention_decisions": 100,
+      "flip_wrong_confident": 100,
+      "flip_oracle": 100,
+      "v7_vs_v5_action_flips": 20,
+      "flip_shuffled": 23,
+      "flip_policy_uniform": 6,
+      "flip_policy_shuffled": 6,
+      "action_flip_rates": {
+        "frozen": 0.0,
+        "wrong_confident": 1.0,
+        "shuffled": 0.23,
+        "oracle": 1.0,
+        "policy_uniform": 0.06,
+        "policy_shuffled": 0.06
+      },
+      "final_preference_estimate": 0.356621,
+      "final_response_policy": {
+        "rationality_scale": 1.110683,
+        "acceptance_bias": -0.054042,
+        "counter_propensity": 0.762779,
+        "normalized_entropy": 0.978854,
+        "surprise_resets": 0
+      },
+      "examples": [
+        {
+          "run": 1,
+          "episode": 1,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 1"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.1,
+            "x_weight_mean": 0.5,
+            "x_weight_q90": 0.9,
+            "normalized_entropy": 1.0,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": -0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 1.0
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 10.14915,
+            "cvar90_particle_regret": 6.950725,
+            "normalized_particle_regret": 0.406478,
+            "regret_weight": 0.35,
+            "regret_penalty": 1.443893,
+            "belief_usable_value": 8.705257
+          }
+        },
+        {
+          "run": 1,
+          "episode": 2,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 1"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.390863,
+            "x_weight_q90": 0.85,
+            "normalized_entropy": 0.972656,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.136297,
+              "acceptance_bias": -0.010145,
+              "counter_propensity": 0.719224,
+              "normalized_entropy": 0.999043,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.986372
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 6.465359,
+            "cvar90_particle_regret": 7.580285,
+            "normalized_particle_regret": 0.539689,
+            "regret_weight": 0.34043,
+            "regret_penalty": 1.187856,
+            "belief_usable_value": 5.277503
+          }
+        },
+        {
+          "run": 1,
+          "episode": 3,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 1"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.346033,
+            "x_weight_q90": 0.8,
+            "normalized_entropy": 0.944342,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.132713,
+              "acceptance_bias": -0.013091,
+              "counter_propensity": 0.730943,
+              "normalized_entropy": 0.996536,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.971473
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 4.978038,
+            "cvar90_particle_regret": 7.711939,
+            "normalized_particle_regret": 0.607719,
+            "regret_weight": 0.33052,
+            "regret_penalty": 0.999904,
+            "belief_usable_value": 3.978134
+          }
+        },
+        {
+          "run": 1,
+          "episode": 4,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 1"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.334216,
+            "x_weight_q90": 0.75,
+            "normalized_entropy": 0.935524,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.129725,
+              "acceptance_bias": -0.013734,
+              "counter_propensity": 0.739617,
+              "normalized_entropy": 0.993653,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.96574
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 4.616052,
+            "cvar90_particle_regret": 7.694958,
+            "normalized_particle_regret": 0.625047,
+            "regret_weight": 0.327433,
+            "regret_penalty": 0.944727,
+            "belief_usable_value": 3.671325
+          }
+        },
+        {
+          "run": 1,
+          "episode": 5,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 10"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.332125,
+            "x_weight_q90": 0.75,
+            "normalized_entropy": 0.934718,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.128405,
+              "acceptance_bias": -0.014433,
+              "counter_propensity": 0.745855,
+              "normalized_entropy": 0.991019,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.963985
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 4.59306,
+            "cvar90_particle_regret": 7.653196,
+            "normalized_particle_regret": 0.624942,
+            "regret_weight": 0.327151,
+            "regret_penalty": 0.939054,
+            "belief_usable_value": 3.654007
+          }
+        },
+        {
+          "run": 1,
+          "episode": 6,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 9"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 9"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 10"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 9"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 9"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.345195,
+            "x_weight_q90": 0.75,
+            "normalized_entropy": 0.9324,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.12525,
+              "acceptance_bias": -0.018474,
+              "counter_propensity": 0.750696,
+              "normalized_entropy": 0.988566,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.961596
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 4.566156,
+            "cvar90_particle_regret": 6.884707,
+            "normalized_particle_regret": 0.601239,
+            "regret_weight": 0.32634,
+            "regret_penalty": 0.895918,
+            "belief_usable_value": 3.670238
+          }
+        },
+        {
+          "run": 1,
+          "episode": 7,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 9"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 9"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 10"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 9"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 9"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.348477,
+            "x_weight_q90": 0.75,
+            "normalized_entropy": 0.93537,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.124167,
+              "acceptance_bias": -0.021696,
+              "counter_propensity": 0.753954,
+              "normalized_entropy": 0.98673,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.962068
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 4.71302,
+            "cvar90_particle_regret": 6.891088,
+            "normalized_particle_regret": 0.593849,
+            "regret_weight": 0.327379,
+            "regret_penalty": 0.916277,
+            "belief_usable_value": 3.796743
+          }
+        },
+        {
+          "run": 1,
+          "episode": 8,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 1"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.393934,
+            "x_weight_q90": 0.85,
+            "normalized_entropy": 0.969482,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.126917,
+              "acceptance_bias": -0.015187,
+              "counter_propensity": 0.739768,
+              "normalized_entropy": 0.993535,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.981985
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 6.372014,
+            "cvar90_particle_regret": 7.828535,
+            "normalized_particle_regret": 0.551284,
+            "regret_weight": 0.339319,
+            "regret_penalty": 1.191955,
+            "belief_usable_value": 5.180059
+          }
+        },
+        {
+          "run": 1,
+          "episode": 9,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 1"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.425754,
+            "x_weight_q90": 0.85,
+            "normalized_entropy": 0.985268,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.128842,
+              "acceptance_bias": -0.010631,
+              "counter_propensity": 0.729837,
+              "normalized_entropy": 0.996837,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.991282
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 7.501356,
+            "cvar90_particle_regret": 7.639678,
+            "normalized_particle_regret": 0.504568,
+            "regret_weight": 0.344844,
+            "regret_penalty": 1.305214,
+            "belief_usable_value": 6.196142
+          }
+        },
+        {
+          "run": 1,
+          "episode": 10,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 1"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.448028,
+            "x_weight_q90": 0.9,
+            "normalized_entropy": 0.992825,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.130189,
+              "acceptance_bias": -0.007442,
+              "counter_propensity": 0.722886,
+              "normalized_entropy": 0.99845,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.995749
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 8.293832,
+            "cvar90_particle_regret": 7.472439,
+            "normalized_particle_regret": 0.473951,
+            "regret_weight": 0.347489,
+            "regret_penalty": 1.365933,
+            "belief_usable_value": 6.927899
+          }
+        },
+        {
+          "run": 1,
+          "episode": 11,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 10"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.1,
+            "x_weight_mean": 0.370354,
+            "x_weight_q90": 0.7,
+            "normalized_entropy": 0.89589,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.111504,
+              "acceptance_bias": -0.034468,
+              "counter_propensity": 0.76396,
+              "normalized_entropy": 0.979874,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.939546
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 4.9459,
+            "cvar90_particle_regret": 9.916646,
+            "normalized_particle_regret": 0.667224,
+            "regret_weight": 0.313561,
+            "regret_penalty": 1.03476,
+            "belief_usable_value": 3.91114
+          }
+        },
+        {
+          "run": 1,
+          "episode": 12,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 10"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.1,
+            "x_weight_mean": 0.409248,
+            "x_weight_q90": 0.8,
+            "normalized_entropy": 0.949214,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.118053,
+              "acceptance_bias": -0.024128,
+              "counter_propensity": 0.746772,
+              "normalized_entropy": 0.990201,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.97052
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 6.122202,
+            "cvar90_particle_regret": 8.422497,
+            "normalized_particle_regret": 0.579077,
+            "regret_weight": 0.332225,
+            "regret_penalty": 1.177812,
+            "belief_usable_value": 4.94439
+          }
+        },
+        {
+          "run": 1,
+          "episode": 13,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 10"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.1,
+            "x_weight_mean": 0.383903,
+            "x_weight_q90": 0.7,
+            "normalized_entropy": 0.88287,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.10278,
+              "acceptance_bias": -0.039813,
+              "counter_propensity": 0.769065,
+              "normalized_entropy": 0.975569,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.931057
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 5.221794,
+            "cvar90_particle_regret": 9.976586,
+            "normalized_particle_regret": 0.656424,
+            "regret_weight": 0.309005,
+            "regret_penalty": 1.059179,
+            "belief_usable_value": 4.162615
+          }
+        },
+        {
+          "run": 1,
+          "episode": 14,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 9"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 10"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 9"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 9"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.1,
+            "x_weight_mean": 0.418732,
+            "x_weight_q90": 0.8,
+            "normalized_entropy": 0.941696,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.111946,
+              "acceptance_bias": -0.027869,
+              "counter_propensity": 0.750345,
+              "normalized_entropy": 0.988071,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.965803
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 6.20818,
+            "cvar90_particle_regret": 8.593328,
+            "normalized_particle_regret": 0.580571,
+            "regret_weight": 0.329593,
+            "regret_penalty": 1.187951,
+            "belief_usable_value": 5.02023
+          }
+        },
+        {
+          "run": 1,
+          "episode": 15,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 1"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.1,
+            "x_weight_mean": 0.443112,
+            "x_weight_q90": 0.85,
+            "normalized_entropy": 0.970555,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.118362,
+              "acceptance_bias": -0.019508,
+              "counter_propensity": 0.737242,
+              "normalized_entropy": 0.994142,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.982816
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 7.388309,
+            "cvar90_particle_regret": 8.300903,
+            "normalized_particle_regret": 0.529083,
+            "regret_weight": 0.339694,
+            "regret_penalty": 1.327875,
+            "belief_usable_value": 6.060433
+          }
+        },
+        {
+          "run": 1,
+          "episode": 16,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 10"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 9"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 9"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.386087,
+            "x_weight_q90": 0.8,
+            "normalized_entropy": 0.943629,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.118224,
+              "acceptance_bias": -0.024868,
+              "counter_propensity": 0.746826,
+              "normalized_entropy": 0.990075,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.967773
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 5.529338,
+            "cvar90_particle_regret": 8.356575,
+            "normalized_particle_regret": 0.601802,
+            "regret_weight": 0.33027,
+            "regret_penalty": 1.098997,
+            "belief_usable_value": 4.430341
+          }
+        },
+        {
+          "run": 1,
+          "episode": 17,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 10"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.1,
+            "x_weight_mean": 0.383527,
+            "x_weight_q90": 0.7,
+            "normalized_entropy": 0.866232,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.089847,
+              "acceptance_bias": -0.043917,
+              "counter_propensity": 0.780961,
+              "normalized_entropy": 0.964525,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.917326
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 5.108185,
+            "cvar90_particle_regret": 9.908432,
+            "normalized_particle_regret": 0.659831,
+            "regret_weight": 0.303181,
+            "regret_penalty": 1.021884,
+            "belief_usable_value": 4.086301
+          }
+        },
+        {
+          "run": 1,
+          "episode": 18,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 10"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.1,
+            "x_weight_mean": 0.366609,
+            "x_weight_q90": 0.75,
+            "normalized_entropy": 0.900046,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.109306,
+              "acceptance_bias": -0.046279,
+              "counter_propensity": 0.773331,
+              "normalized_entropy": 0.971833,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.937362
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 4.391498,
+            "cvar90_particle_regret": 8.127176,
+            "normalized_particle_regret": 0.649204,
+            "regret_weight": 0.315016,
+            "regret_penalty": 0.898104,
+            "belief_usable_value": 3.493393
+          }
+        },
+        {
+          "run": 1,
+          "episode": 19,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 10"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.31731,
+            "x_weight_q90": 0.7,
+            "normalized_entropy": 0.880667,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.095026,
+              "acceptance_bias": -0.053051,
+              "counter_propensity": 0.796637,
+              "normalized_entropy": 0.947623,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.915472
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 3.599104,
+            "cvar90_particle_regret": 6.886126,
+            "normalized_particle_regret": 0.656745,
+            "regret_weight": 0.308233,
+            "regret_penalty": 0.72857,
+            "belief_usable_value": 2.870535
+          }
+        },
+        {
+          "run": 1,
+          "episode": 20,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 10"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 10"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.372117,
+            "x_weight_q90": 0.8,
+            "normalized_entropy": 0.942419,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.106518,
+              "acceptance_bias": -0.037136,
+              "counter_propensity": 0.769646,
+              "normalized_entropy": 0.974411,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.959049
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 5.542988,
+            "cvar90_particle_regret": 6.951077,
+            "normalized_particle_regret": 0.55635,
+            "regret_weight": 0.329847,
+            "regret_penalty": 1.017195,
+            "belief_usable_value": 4.525793
+          }
+        }
+      ]
+    },
+    {
+      "setting": "resource_second",
+      "source": "arena_runs/formal_belief_matrix_qwen30b_5x20_20260812/resource_second/framework_v5",
+      "decisions": 133,
+      "intervention_decisions": 99,
+      "flip_wrong_confident": 34,
+      "flip_oracle": 46,
+      "v7_proposals": 45,
+      "flip_frozen": 6,
+      "flip_shuffled": 11,
+      "flip_policy_uniform": 3,
+      "flip_policy_shuffled": 2,
+      "v7_vs_v5_action_flips": 13,
+      "action_flip_rates": {
+        "frozen": 0.06060606060606061,
+        "wrong_confident": 0.3434343434343434,
+        "shuffled": 0.1111111111111111,
+        "oracle": 0.46464646464646464,
+        "policy_uniform": 0.030303030303030304,
+        "policy_shuffled": 0.020202020202020204
+      },
+      "final_preference_estimate": 0.607441,
+      "final_response_policy": {
+        "rationality_scale": 1.113856,
+        "acceptance_bias": -0.052894,
+        "counter_propensity": 0.742354,
+        "normalized_entropy": 0.991015,
+        "surprise_resets": 0
+      },
+      "examples": [
+        {
+          "run": 1,
+          "episode": 8,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 4"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 4"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 4"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 1"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 4"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 3"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 4"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 4"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.0,
+            "x_weight_mean": 0.317726,
+            "x_weight_q90": 0.85,
+            "normalized_entropy": 0.92534,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": 0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.964149
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 9,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 1"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 3"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.0,
+            "x_weight_mean": 0.312065,
+            "x_weight_q90": 0.8,
+            "normalized_entropy": 0.923952,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": -0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.963483
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 1,
+          "episode": 10,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 4"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 4"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 6"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 1"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 6"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 4"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 4"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.0,
+            "x_weight_mean": 0.310223,
+            "x_weight_q90": 0.8,
+            "normalized_entropy": 0.925073,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": 0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.964022
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 13.584887,
+            "cvar90_particle_regret": 17.399268,
+            "normalized_particle_regret": 0.561554,
+            "regret_weight": 0.323776,
+            "regret_penalty": 2.46997,
+            "belief_usable_value": 11.114918
+          }
+        },
+        {
+          "run": 2,
+          "episode": 2,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 1"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 1"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 1"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 1"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 1"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 1"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 1"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.413581,
+            "x_weight_q90": 0.9,
+            "normalized_entropy": 0.984495,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": 0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.992555
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 2,
+          "episode": 4,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 2"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 1"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 5 | Player BLUE Gives Y: 2"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.36161,
+            "x_weight_q90": 0.85,
+            "normalized_entropy": 0.96096,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": -0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.981254
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 12.67217,
+            "cvar90_particle_regret": 15.799495,
+            "normalized_particle_regret": 0.55492,
+            "regret_weight": 0.336336,
+            "regret_penalty": 2.365129,
+            "belief_usable_value": 10.307041
+          }
+        },
+        {
+          "run": 2,
+          "episode": 10,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.318482,
+            "x_weight_q90": 0.8,
+            "normalized_entropy": 0.931755,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": 0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.96723
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 2,
+          "episode": 12,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.318239,
+            "x_weight_q90": 0.8,
+            "normalized_entropy": 0.931586,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": -0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.967149
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 2,
+          "episode": 14,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.319383,
+            "x_weight_q90": 0.8,
+            "normalized_entropy": 0.932175,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": -0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.967432
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 2,
+          "episode": 15,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.320698,
+            "x_weight_q90": 0.8,
+            "normalized_entropy": 0.933015,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": 0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.967835
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 2,
+          "episode": 16,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.321934,
+            "x_weight_q90": 0.8,
+            "normalized_entropy": 0.933687,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": 0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.968158
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 2,
+          "episode": 17,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 7"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.32301,
+            "x_weight_q90": 0.8,
+            "normalized_entropy": 0.934214,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": -0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.968411
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 2,
+          "episode": 19,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 8"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 8"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 8"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 8"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 8"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 8"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 8"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.322609,
+            "x_weight_q90": 0.8,
+            "normalized_entropy": 0.934221,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": 0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.968414
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 2,
+          "episode": 20,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 8"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 8"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 8"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 8"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 8"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 8"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 8"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.324422,
+            "x_weight_q90": 0.8,
+            "normalized_entropy": 0.935686,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": -0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.969118
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 3,
+          "episode": 1,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 1"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.1,
+            "x_weight_mean": 0.5,
+            "x_weight_q90": 0.9,
+            "normalized_entropy": 1.0,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": 0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 1.0
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 10.14915,
+            "cvar90_particle_regret": 6.950725,
+            "normalized_particle_regret": 0.406478,
+            "regret_weight": 0.35,
+            "regret_penalty": 1.443893,
+            "belief_usable_value": 8.705257
+          }
+        },
+        {
+          "run": 3,
+          "episode": 2,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 1"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.453266,
+            "x_weight_q90": 0.9,
+            "normalized_entropy": 0.994579,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": 0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.997397
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 11.455189,
+            "cvar90_particle_regret": 7.18447,
+            "normalized_particle_regret": 0.38544,
+            "regret_weight": 0.348103,
+            "regret_penalty": 1.536974,
+            "belief_usable_value": 9.918215
+          }
+        },
+        {
+          "run": 3,
+          "episode": 3,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 12"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 12"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 12"
+            },
+            "wrong_confident": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 12"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 12"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 12"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 12"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.41452,
+            "x_weight_q90": 0.85,
+            "normalized_entropy": 0.983497,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": -0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.992076
+          },
+          "chosen_belief_use": null
+        },
+        {
+          "run": 3,
+          "episode": 4,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 1"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.440164,
+            "x_weight_q90": 0.9,
+            "normalized_entropy": 0.992101,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.133333,
+              "acceptance_bias": 0.0,
+              "counter_propensity": 0.706667,
+              "normalized_entropy": 1.0,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.996207
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 12.016641,
+            "cvar90_particle_regret": 6.964421,
+            "normalized_particle_regret": 0.366914,
+            "regret_weight": 0.347235,
+            "regret_penalty": 1.530987,
+            "belief_usable_value": 10.485653
+          }
+        },
+        {
+          "run": 3,
+          "episode": 7,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 1"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.05,
+            "x_weight_mean": 0.456855,
+            "x_weight_q90": 0.85,
+            "normalized_entropy": 0.989345,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.139004,
+              "acceptance_bias": -0.011246,
+              "counter_propensity": 0.71139,
+              "normalized_entropy": 0.999792,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.994775
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 11.479547,
+            "cvar90_particle_regret": 7.541582,
+            "normalized_particle_regret": 0.396484,
+            "regret_weight": 0.346271,
+            "regret_penalty": 1.576038,
+            "belief_usable_value": 9.903509
+          }
+        },
+        {
+          "run": 3,
+          "episode": 8,
+          "decision": 1,
+          "v5": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "v7": {
+            "type": "PROPOSE",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 1 | Player BLUE Gives Y: 1"
+            },
+            "shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 10"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_uniform": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 9 | Player BLUE Gives Y: 10"
+            },
+            "policy_shuffled": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 9 | Player BLUE Gives Y: 10"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.2,
+            "x_weight_mean": 0.587242,
+            "x_weight_q90": 0.9,
+            "normalized_entropy": 0.963151,
+            "evidence_count": 0,
+            "response_policy": {
+              "rationality_scale": 1.136772,
+              "acceptance_bias": -0.024367,
+              "counter_propensity": 0.724378,
+              "normalized_entropy": 0.997918,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.981223
+          },
+          "chosen_belief_use": {
+            "posterior_mean_action_value": 6.706692,
+            "cvar90_particle_regret": 8.250776,
+            "normalized_particle_regret": 0.551616,
+            "regret_weight": 0.337103,
+            "regret_penalty": 1.247118,
+            "belief_usable_value": 5.459574
+          }
+        },
+        {
+          "run": 3,
+          "episode": 12,
+          "decision": 1,
+          "v5": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 25"
+          },
+          "v7": {
+            "type": "ACCEPT",
+            "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 25"
+          },
+          "interventions": {
+            "frozen": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 25"
+            },
+            "wrong_confident": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 1"
+            },
+            "shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 25"
+            },
+            "oracle": {
+              "type": "PROPOSE",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 5"
+            },
+            "policy_uniform": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 25"
+            },
+            "policy_shuffled": {
+              "type": "ACCEPT",
+              "trade_text": "Player RED Gives X: 10 | Player BLUE Gives Y: 25"
+            }
+          },
+          "posterior": {
+            "kind": "opponent_relative_resource_value",
+            "x_weight_q10": 0.1,
+            "x_weight_mean": 0.45426,
+            "x_weight_q90": 0.8,
+            "normalized_entropy": 0.94725,
+            "evidence_count": 1,
+            "response_policy": {
+              "rationality_scale": 1.120635,
+              "acceptance_bias": -0.031932,
+              "counter_propensity": 0.726447,
+              "normalized_entropy": 0.997113,
+              "surprise_resets": 0
+            },
+            "joint_normalized_entropy": 0.97317
+          },
+          "chosen_belief_use": null
+        }
+      ]
+    }
+  ]
+}

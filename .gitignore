@@ -1,0 +1,89 @@
+# Secrets and local configuration. Examples must use the explicit .example suffix.
+.env
+.env.*
+!.env.example
+!**/.env.example
+**/secrets.*
+**/credentials*.json
+**/*service-account*.json
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Python environments and caches
+.venv/
+venv/
+env/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# IDE and operating-system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*~
+*.swp
+
+# Negotiation experiment outputs and raw model traces
+**/arena_runs/
+**/simple_env_runs/
+**/runs/
+**/model_traces/
+**/checkpoints/
+**/outputs/
+**/wandb/
+**/mlruns/
+**/tensorboard/
+**/calls.jsonl
+**/episodes.jsonl
+**/failed_episodes.jsonl
+**/framework_*_decisions.jsonl
+**/game_state.json
+**/interaction.log
+**/vllm*.log
+*.log
+
+# Models and large training artifacts
+models/
+**/models/
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+*.onnx
+*.gguf
+
+# Local datasets and databases; publish only reviewed small fixtures explicitly.
+data/
+datasets/
+*.sqlite
+*.sqlite3
+*.db
+*.parquet
+*.arrow
+
+# Research scratch, duplicated snapshots, and generated backups
+**/code_snapshot*/
+**/scratch/
+**/tmp/
+**/cache/
+*.bak
+*.backup
+*.backup_*
+~$*.pptx
+
+# Keep reviewed aggregate results and editable presentations trackable.
+!docs/results/
+!docs/results/**
+!docs/presentations/
+!docs/presentations/**

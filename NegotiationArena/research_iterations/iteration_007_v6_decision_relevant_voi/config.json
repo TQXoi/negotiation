@@ -1,0 +1,21 @@
+{
+  "iteration": 7,
+  "status": "stage1_smoke_running",
+  "method_candidate": "decision_relevant_value_of_information_v6",
+  "formal_completion_gate": {
+    "main_cells": 36,
+    "switch_cells": 20,
+    "latest_episodes_per_cell": 100,
+    "current_errors_per_cell": 0
+  },
+  "implementation_frozen_until_gate": false,
+  "primary_pairing_unit": "run",
+  "smoke_runs": 2,
+  "confirmatory_runs": 5,
+  "episodes_per_run": 20,
+  "formal_gate_passed_utc": "2026-08-13T02:05:40Z",
+  "implementation": "arena_integration.decision_calibrated_agent.DecisionRelevantInformationPlannerAgent",
+  "offline_replay": "offline_replay.json",
+  "smoke_output": "runs/smoke_seed20260840",
+  "notes": "Formal 56-cell gate passed. V6 was implemented additively, passed 42 integration tests, and exact-posterior one-step replay before the isolated online smoke."
+}

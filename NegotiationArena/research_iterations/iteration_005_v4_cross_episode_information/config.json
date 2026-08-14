@@ -1,0 +1,13 @@
+{
+  "variant": "framework_v4",
+  "base_variant": "framework_v3_3",
+  "model": "Qwen3-30B-A3B-Instruct-2507-base",
+  "base_url": "http://127.0.0.1:8002/v1",
+  "opponent_policy": "strategic_brainstorming",
+  "protocol_mode": "normalize_retry",
+  "strict_current_offer_acceptance": true,
+  "paper_temperature": 0.7,
+  "seed": 20260805,
+  "pilot_episodes_per_setting": 10,
+  "settings": ["buyer", "seller", "resource_first", "resource_second"]
+}

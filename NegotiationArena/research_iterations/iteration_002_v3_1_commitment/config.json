@@ -1,0 +1,16 @@
+{
+  "iteration": 2,
+  "variant": "framework_v3_1",
+  "parent": "framework_v3",
+  "seed": 20260805,
+  "runs": 1,
+  "episodes_per_run": 10,
+  "history_commitment_window": 5,
+  "commitment_slack": 1.0,
+  "actor_model": "Qwen3-30B-A3B-Instruct-2507-base",
+  "opponent_model": "Qwen3-30B-A3B-Instruct-2507-base",
+  "base_url": "http://127.0.0.1:8002/v1",
+  "settings": ["buyer", "seller", "resource_first", "resource_second"],
+  "v2_reference": "arena_runs/framework_v2_1_fix_validation_n10_20260812",
+  "v3_reference": "arena_runs/dc_bap_v3_paired_n10_seed20260805"
+}
