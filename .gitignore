@@ -72,8 +72,19 @@ datasets/
 *.parquet
 *.arrow
 
+# Third-party source trees are reproducibly cloned by scripts/bootstrap_upstreams.sh.
+benchmarks/
+external_upstreams/
+external_negotiation_envs/
+
+# The reviewed CaSiNo JSON split is intentionally versioned with its CC BY license.
+!CaSiNo_Env/data/
+!CaSiNo_Env/data/casino/
+!CaSiNo_Env/data/casino/*.json
+
 # Research scratch, duplicated snapshots, and generated backups
 **/code_snapshot*/
+**/research_iterations/
 **/scratch/
 **/tmp/
 **/cache/
@@ -81,6 +92,7 @@ datasets/
 *.backup
 *.backup_*
 ~$*.pptx
+transfer_packages/
 
 # Keep reviewed aggregate results and editable presentations trackable.
 !docs/results/

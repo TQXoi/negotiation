@@ -1,0 +1,21 @@
+{
+  "version": "simple_env_identifiable_v1",
+  "source": "PlannerParams defaults frozen before identifiable-suite experiments",
+  "params": {
+    "first_anchor_ratio": 0.45,
+    "early_concession_rate": 0.055,
+    "late_concession_rate": 0.095,
+    "p50_low_mult": 0.92,
+    "p50_mid_mult": 1.0,
+    "p50_high_mult": 1.04,
+    "mean_mult": 1.0,
+    "seller_discount_early": 0.76,
+    "seller_discount_late": 0.86,
+    "min_increment_ratio": 0.02,
+    "accept_reward_threshold": 0.18,
+    "accept_seller_ratio_threshold": 0.86,
+    "lowball_penalty_weight": 0.2,
+    "quit_penalty": 0.25,
+    "future_value_weight": 0.55
+  }
+}
