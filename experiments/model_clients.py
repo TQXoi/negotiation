@@ -23,6 +23,7 @@ except Exception:  # pragma: no cover - lets this module be imported before sys.
 Message = Dict[str, str]
 _OPENAI_LEGACY_LOCK = threading.Lock()
 _CONTEXT_AUDIT_LOCK = threading.Lock()
+_RESPONSE_CACHE_LOCK = threading.Lock()
 
 
 @dataclass
@@ -183,6 +184,23 @@ class OpenAIClient(ModelClient):
         self.max_output_tokens = int(os.environ.get("NEGOTIATION_MAX_OUTPUT_TOKENS", "0") or 0)
         self.context_chars_per_token = float(os.environ.get("NEGOTIATION_CONTEXT_CHARS_PER_TOKEN", "3.0"))
         self.context_safety_margin = int(os.environ.get("NEGOTIATION_CONTEXT_SAFETY_MARGIN", "256"))
+        request_seed_raw = os.environ.get("NEGOTIATION_REQUEST_SEED_BASE")
+        self.request_seed_base = (
+            int(request_seed_raw) if request_seed_raw not in (None, "") else None
+        )
+        response_cache_raw = os.environ.get("NEGOTIATION_RESPONSE_CACHE_JSONL")
+        self.response_cache_path = (
+            Path(response_cache_raw) if response_cache_raw else None
+        )
+        self._response_cache: Dict[str, str] = {}
+        if self.response_cache_path and self.response_cache_path.exists():
+            for line in self.response_cache_path.read_text(errors="replace").splitlines():
+                try:
+                    row = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if isinstance(row, dict) and row.get("cache_key") and isinstance(row.get("text"), str):
+                    self._response_cache[str(row["cache_key"])] = row["text"]
         audit_path = os.environ.get("NEGOTIATION_CONTEXT_AUDIT_JSONL")
         self.context_audit_path = Path(audit_path) if audit_path else None
         try:
@@ -214,6 +232,43 @@ class OpenAIClient(ModelClient):
     ) -> GenerationResult:
         start = time.time()
         messages, max_tokens = self._context_safe_request(messages, max_tokens)
+        # Optional common-random-number control for paired evaluations.  The
+        # same public prompt under two framework variants receives the same
+        # vLLM sample, while a different evaluation seed produces a new seller
+        # rollout.  Hosted/default clients are unchanged unless explicitly
+        # enabled by the experiment runner.
+        if self.request_seed_base is not None and "seed" not in kwargs:
+            material = json.dumps(
+                {
+                    "base": self.request_seed_base,
+                    "model": self.model_id,
+                    "messages": messages,
+                    "max_tokens": max_tokens,
+                    "temperature": temperature,
+                    "top_p": top_p,
+                },
+                ensure_ascii=False,
+                sort_keys=True,
+            )
+            kwargs["seed"] = int(
+                hashlib.sha256(material.encode("utf-8")).hexdigest()[:8], 16
+            )
+        response_cache_key = self._response_cache_key(
+            messages=messages,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            top_p=top_p,
+            kwargs=kwargs,
+        )
+        cached_text = self._response_cache.get(response_cache_key)
+        if cached_text is not None:
+            return GenerationResult(
+                text=cached_text,
+                provider=self.provider,
+                model=self.model_id,
+                latency_seconds=round(time.time() - start, 3),
+                raw={"response_cache_hit": True, "cache_key": response_cache_key},
+            )
         if self.sdk_style == "legacy":
             if self.request_timeout is not None and "request_timeout" not in kwargs:
                 kwargs["request_timeout"] = self.request_timeout
@@ -240,6 +295,7 @@ class OpenAIClient(ModelClient):
                     self.client.api_key = previous_api_key
             text = response["choices"][0]["message"]["content"].strip()
             raw = response.to_dict_recursive() if hasattr(response, "to_dict_recursive") else None
+            self._store_cached_response(response_cache_key, text)
             return GenerationResult(
                 text=text,
                 provider=self.provider,
@@ -260,6 +316,7 @@ class OpenAIClient(ModelClient):
                 **kwargs,
             )
             text = (response.choices[0].message.content or "").strip()
+            self._store_cached_response(response_cache_key, text)
             return GenerationResult(
                 text=text,
                 provider=self.provider,
@@ -276,13 +333,60 @@ class OpenAIClient(ModelClient):
             top_p=top_p,
             **kwargs,
         )
+        text = response.output_text.strip()
+        self._store_cached_response(response_cache_key, text)
         return GenerationResult(
-            text=response.output_text.strip(),
+            text=text,
             provider=self.provider,
             model=self.model_id,
             latency_seconds=round(time.time() - start, 3),
             raw=response.model_dump(mode="json"),
         )
+
+    def _response_cache_key(
+        self,
+        *,
+        messages: List[Message],
+        max_tokens: int,
+        temperature: float,
+        top_p: float,
+        kwargs: Dict[str, Any],
+    ) -> str:
+        material = {
+            "provider": self.provider,
+            "base_url": self.base_url,
+            "model": self.model_id,
+            "messages": messages,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "top_p": top_p,
+            "kwargs": kwargs,
+        }
+        return hashlib.sha256(
+            json.dumps(
+                material,
+                ensure_ascii=False,
+                sort_keys=True,
+                default=str,
+            ).encode("utf-8")
+        ).hexdigest()
+
+    def _store_cached_response(self, cache_key: str, text: str) -> None:
+        if self.response_cache_path is None or cache_key in self._response_cache:
+            return
+        row = {
+            "cache_key": cache_key,
+            "provider": self.provider,
+            "model": self.model_id,
+            "text": text,
+        }
+        with _RESPONSE_CACHE_LOCK:
+            if cache_key in self._response_cache:
+                return
+            self.response_cache_path.parent.mkdir(parents=True, exist_ok=True)
+            with self.response_cache_path.open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+            self._response_cache[cache_key] = text
 
     def _context_safe_request(
         self,

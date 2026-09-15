@@ -45,6 +45,7 @@ class Single28RunConfig:
     limit: Optional[int] = None
     planner_checkpoint: Optional[str] = None
     resume: bool = True
+    resume_from_jsonl: Optional[Path] = None
     experiment_name: str = "agenticpay_env_single28"
 
 
@@ -94,7 +95,9 @@ def build_command(config: Single28RunConfig) -> List[str]:
         command.extend(["--limit", str(config.limit)])
     if config.planner_checkpoint:
         command.extend(["--planner-checkpoint", config.planner_checkpoint])
-    resume_jsonl = config.output_dir / "task_results.jsonl"
+    resume_jsonl = config.resume_from_jsonl or (
+        config.output_dir / "task_results.jsonl"
+    )
     if config.resume and resume_jsonl.exists():
         command.extend(["--resume-from-jsonl", str(resume_jsonl)])
     return command
@@ -122,4 +125,6 @@ def run_single28(config: Single28RunConfig, *, dry_run: bool = False) -> Dict[st
 def _jsonable_config(config: Single28RunConfig) -> Dict[str, Any]:
     payload = asdict(config)
     payload["output_dir"] = str(config.output_dir)
+    if config.resume_from_jsonl is not None:
+        payload["resume_from_jsonl"] = str(config.resume_from_jsonl)
     return payload

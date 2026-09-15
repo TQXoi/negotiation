@@ -35,6 +35,7 @@ for path in [WORKSPACE, AGENTICPAY_ROOT]:
         sys.path.insert(0, str(path))
 
 from AgenticPay_Env.buyer.variants import parse_buyer_variants
+from experiments.agenticpay_qwen_eval import set_seed
 from experiments.model_clients import make_model_client
 from experiments.run_agenticpay_single28_framework import parse_framework_traces, patch_module
 
@@ -61,17 +62,27 @@ class AllTasksRunConfig:
     buyer_variants: List[str]
     task_suites: List[str]
     seller_variant: str = "native"
+    seed: int = 0
     max_new_tokens: int = 1024
     torch_dtype: str = "bfloat16"
     device_map: str = "auto"
     cache_dir: Optional[str] = None
+    planner_checkpoint: Optional[str] = None
+    tasks: str = "all"
     limit: Optional[int] = None
     resume: bool = True
+    focal_buyer_index: Optional[int] = None
 
 
 def run_all_tasks(config: AllTasksRunConfig, *, dry_run: bool = False) -> Dict[str, Any]:
+    # The upstream task scripts rely on global Python/NumPy/Torch RNG state.
+    # Reset it once per run so migrations and later paired comparisons are
+    # reproducible instead of silently ignoring AgenticPay_Env.eval --seed.
+    set_seed(config.seed)
     config.output_dir.mkdir(parents=True, exist_ok=True)
-    task_paths = selected_task_paths(config.task_suites)
+    task_paths = filter_task_paths(
+        selected_task_paths(config.task_suites), config.tasks
+    )
     if config.limit is not None:
         task_paths = task_paths[: config.limit]
     config.buyer_variants = parse_buyer_variants(",".join(config.buyer_variants))
@@ -113,13 +124,21 @@ def run_all_tasks(config: AllTasksRunConfig, *, dry_run: bool = False) -> Dict[s
         for variant in config.buyer_variants:
             for idx, task_path in enumerate(task_paths):
                 rel = str(task_path.relative_to(EXAMPLES_ROOT))
-                key = _record_key(variant, rel, config.buyer_model, config.seller_model, config.seller_variant)
+                key = _record_key(
+                    variant,
+                    rel,
+                    config.buyer_model,
+                    config.seller_model,
+                    config.seller_variant,
+                    config.focal_buyer_index,
+                )
                 if key in completed:
                     continue
                 start_time = time.time()
                 log_buffer = StringIO()
                 try:
                     module = _import_task_module(task_path, variant)
+                    trajectory_capture: Dict[str, Any] = {"rounds": [], "env": {}}
                     patch_module(
                         module,
                         client=buyer_client,
@@ -130,13 +149,32 @@ def run_all_tasks(config: AllTasksRunConfig, *, dry_run: bool = False) -> Dict[s
                         buyer_client=buyer_client,
                         seller_client=seller_client,
                         seller_model_alias=config.seller_model_alias,
+                        planner_checkpoint=config.planner_checkpoint,
+                        trajectory_capture=trajectory_capture,
+                        focal_buyer_index=config.focal_buyer_index,
                     )
                     with contextlib.redirect_stdout(log_buffer), contextlib.redirect_stderr(log_buffer):
                         module.main(model_name=config.buyer_model_alias)
+                    buyer_patch_audit = dict(
+                        getattr(module, "_negotiation_buyer_patch_audit", {})
+                    )
+                    if config.focal_buyer_index is not None and (
+                        buyer_patch_audit.get("variant_buyer_instances") != 1
+                    ):
+                        raise RuntimeError(
+                            "Focal-only buyer replacement audit failed: "
+                            f"{buyer_patch_audit}"
+                        )
                     summary_path = _latest_summary_after(task_path.parent.name, start_time)
-                    summary_data = _read_json(summary_path) if summary_path else {}
+                    summary_data = _normalize_upstream_summary(
+                        _read_json(summary_path) if summary_path else {}
+                    )
+                    focal_metrics = _focal_buyer_metrics(
+                        summary_data, config.focal_buyer_index
+                    )
                     record = {
                         **summary_data,
+                        **focal_metrics,
                         "task_path": rel,
                         "task_family": task_path.parent.name,
                         "task_index": idx,
@@ -146,12 +184,31 @@ def run_all_tasks(config: AllTasksRunConfig, *, dry_run: bool = False) -> Dict[s
                         "seller_model_spec": config.seller_model,
                         "buyer_model_alias": config.buyer_model_alias,
                         "seller_model_alias": config.seller_model_alias,
+                        "focal_buyer_index": config.focal_buyer_index,
+                        "buyer_population_policy": (
+                            "focal_only"
+                            if config.focal_buyer_index is not None
+                            else "all_buyers"
+                        ),
+                        "buyer_patch_audit": buyer_patch_audit,
                         "source_summary_path": str(summary_path) if summary_path else None,
                         "framework_traces": parse_framework_traces(log_buffer.getvalue()),
                         "framework_trace_version": "stdout_FRAMEWORK_TRACE_v1",
                         "elapsed_time": round(time.time() - start_time, 3),
                         "error": None,
                     }
+                    # Observation-only instrumentation.  This mirrors the
+                    # single28 runner and gives later offline training an exact
+                    # public action/response sequence without changing the
+                    # benchmark environment, seller, scorer, or chosen action.
+                    for key, value in (trajectory_capture.get("env") or {}).items():
+                        if value is not None and record.get(key) is None:
+                            record[key] = value
+                    if trajectory_capture.get("rounds"):
+                        record["rounds"] = trajectory_capture["rounds"]
+                        record["trajectory_capture_version"] = (
+                            "agenticpay_all_tasks_env_step_v1"
+                        )
                 except Exception as exc:
                     record = {
                         "task_path": rel,
@@ -163,6 +220,12 @@ def run_all_tasks(config: AllTasksRunConfig, *, dry_run: bool = False) -> Dict[s
                         "seller_model_spec": config.seller_model,
                         "buyer_model_alias": config.buyer_model_alias,
                         "seller_model_alias": config.seller_model_alias,
+                        "focal_buyer_index": config.focal_buyer_index,
+                        "buyer_population_policy": (
+                            "focal_only"
+                            if config.focal_buyer_index is not None
+                            else "all_buyers"
+                        ),
                         "status": "error",
                         "success": False,
                         "error_type": exc.__class__.__name__,
@@ -200,6 +263,27 @@ def selected_task_paths(task_suites: List[str]) -> List[Path]:
     return sorted(paths, key=lambda p: (TASK_FAMILIES.index(p.parent.name), _task_sort_key(p)))
 
 
+def filter_task_paths(paths: List[Path], raw: str) -> List[Path]:
+    """Filter task paths by exact stem or ``TaskN`` alias.
+
+    The filter is applied after suite selection.  It exists for inexpensive
+    paired development gates; ``tasks=all`` remains the benchmark default.
+    """
+
+    if not raw or raw.strip().lower() == "all":
+        return paths
+    wanted = {item.strip() for item in raw.split(",") if item.strip()}
+    selected: List[Path] = []
+    for path in paths:
+        number_match = re.match(r"Task(\d+)", path.name)
+        aliases = {path.stem, path.name, str(path.relative_to(EXAMPLES_ROOT))}
+        if number_match:
+            aliases.add(f"Task{number_match.group(1)}")
+        if aliases & wanted:
+            selected.append(path)
+    return selected
+
+
 def summarize(records: List[Dict[str, Any]]) -> Dict[str, Any]:
     valid = [r for r in records if r.get("status") != "error"]
     return {
@@ -211,6 +295,70 @@ def summarize(records: List[Dict[str, Any]]) -> Dict[str, Any]:
         "by_buyer_variant": _grouped_summary(valid, "buyer_variant"),
         "by_task_family_and_variant": _grouped_summary(valid, "task_family", "buyer_variant"),
         "failure_examples": [r for r in records if r.get("status") == "error"][:20],
+    }
+
+
+def _normalize_upstream_summary(summary: Dict[str, Any]) -> Dict[str, Any]:
+    """Expose comparable top-level metrics for upstream nested summaries.
+
+    `only_multi_products` reports one result per product while the other
+    AgenticPay families already provide episode-level fields.  Preserve the
+    original `product_results`, and add transparent macro score / additive
+    reward fields only when the corresponding top-level value is absent.
+    """
+
+    output = dict(summary)
+    product_rows = [
+        row
+        for row in output.get("product_results") or []
+        if isinstance(row, dict)
+    ]
+    if not product_rows:
+        return output
+    for key in ("buyer_score", "seller_score", "global_score"):
+        values = [float(row[key]) for row in product_rows if row.get(key) is not None]
+        if output.get(key) is None and values:
+            output[key] = statistics.fmean(values)
+    for key in ("buyer_reward", "seller_reward", "rounds"):
+        values = [float(row[key]) for row in product_rows if row.get(key) is not None]
+        target = "total_rounds" if key == "rounds" else key
+        if output.get(target) is None and values:
+            output[target] = sum(values)
+    output["score_aggregation"] = "macro_mean_over_product_results"
+    output["reward_aggregation"] = "sum_over_product_results"
+    return output
+
+
+def _focal_buyer_metrics(
+    summary: Dict[str, Any], focal_buyer_index: Optional[int]
+) -> Dict[str, Any]:
+    """Expose focal-buyer outcomes without redefining AgenticPay BuyerScore.
+
+    Multi-buyer task summaries retain the official aggregate ``buyer_score``
+    and additionally report one reward per buyer.  For causal focal-only
+    evaluation, copy the selected buyer's native reward and selection event to
+    explicit fields.  We deliberately do not synthesize a focal BuyerScore,
+    because that would silently change the benchmark's scoring definition.
+    """
+
+    if focal_buyer_index is None:
+        return {}
+    reward = summary.get(f"buyer{focal_buyer_index}_reward")
+    selected = summary.get("selected_buyer")
+    selected_flag: Optional[bool]
+    if selected is None:
+        selected_flag = None
+    else:
+        match = re.search(r"\d+", str(selected))
+        selected_flag = bool(
+            match and int(match.group(0)) == focal_buyer_index
+        )
+    return {
+        "focal_buyer_reward": reward,
+        "focal_buyer_selected": selected_flag,
+        "focal_buyer_max_price": summary.get(
+            f"buyer{focal_buyer_index}_max_price"
+        ),
     }
 
 
@@ -326,8 +474,25 @@ def _write_summary(path: Path, records: List[Dict[str, Any]]) -> None:
     path.write_text(json.dumps(summarize(records), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
-def _record_key(variant: str, task_path: str, buyer_model: str, seller_model: str, seller_variant: str) -> str:
-    return json.dumps([variant, task_path, buyer_model, seller_model, seller_variant], ensure_ascii=False)
+def _record_key(
+    variant: str,
+    task_path: str,
+    buyer_model: str,
+    seller_model: str,
+    seller_variant: str,
+    focal_buyer_index: Optional[int],
+) -> str:
+    return json.dumps(
+        [
+            variant,
+            task_path,
+            buyer_model,
+            seller_model,
+            seller_variant,
+            focal_buyer_index,
+        ],
+        ensure_ascii=False,
+    )
 
 
 def _completed_keys(records: List[Dict[str, Any]]) -> set[str]:
@@ -342,6 +507,7 @@ def _completed_keys(records: List[Dict[str, Any]]) -> set[str]:
                 str(record.get("buyer_model_spec")),
                 str(record.get("seller_model_spec")),
                 str(record.get("seller_variant", "native")),
+                record.get("focal_buyer_index"),
             )
         )
     return completed

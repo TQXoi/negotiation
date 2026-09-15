@@ -72,8 +72,27 @@ class UniversalNegotiationEngine:
         candidates = adapter.candidates(state, decision_belief)
         ranked = self.planner.rank(state, decision_belief, candidates)
         selected = ranked[0]
+        # Optional hard selection boundary. Environment adapters may use this
+        # hook to reject a planner action that is protocol-valid but unsafe
+        # under public execution semantics. It runs before language
+        # realization, so replacement actions remain action-locked and are
+        # explicit in the decision trace.
+        selection_validation: Dict[str, Any] = {}
+        selection_validator = getattr(adapter, "validate_selection", None)
+        if callable(selection_validator):
+            selected, selection_validation = selection_validator(
+                state,
+                decision_belief,
+                ranked,
+                selected,
+            )
         rendered = adapter.render_locked(state, decision_belief, selected, self.language_client)
         rendered, validation = adapter.validate_locked(state, selected, rendered)
+        if selection_validation:
+            validation = {
+                **validation,
+                "selection_validator": selection_validation,
+            }
         decision = FrameworkDecision(
             state=state,
             belief=copy.deepcopy(decision_belief),

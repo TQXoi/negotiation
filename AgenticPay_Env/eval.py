@@ -39,6 +39,15 @@ def parse_args() -> argparse.Namespace:
         help="Comma-separated AgenticPay example suites for --suite agenticpay_all_tasks, or all.",
     )
     parser.add_argument("--seller-variant", default="native", choices=["native", "validated"])
+    parser.add_argument(
+        "--focal-buyer-index",
+        type=int,
+        default=None,
+        help=(
+            "1-based BuyerAgent construction index to replace in agenticpay_all_tasks. "
+            "All other buyers remain the upstream native BuyerAgent. Omit to replace all buyers."
+        ),
+    )
     parser.add_argument("--tasks", default="all")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--max-new-tokens", type=int, default=1024)
@@ -50,6 +59,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--repeats", type=int, default=1, help="Repeats per buyer variant for multi_agent suite.")
     parser.add_argument("--no-resume", action="store_true")
+    parser.add_argument(
+        "--resume-from-jsonl",
+        default=None,
+        help="Optional prior Single28 JSONL; selected completed rows are reused.",
+    )
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--output-dir", default=str(WORKSPACE / "runs" / "agenticpay" / "single28"))
     parser.add_argument("--planner-checkpoint", default=None, help="Checkpoint for learned residual planner variants.")
@@ -102,12 +116,16 @@ def main() -> None:
             buyer_variants=variants,
             task_suites=task_suites,
             seller_variant=args.seller_variant,
+            seed=args.seed,
             max_new_tokens=args.max_new_tokens,
             torch_dtype=args.torch_dtype,
             device_map=args.device_map,
             cache_dir=args.cache_dir,
+            planner_checkpoint=args.planner_checkpoint,
+            tasks=args.tasks,
             limit=args.limit,
             resume=not args.no_resume,
+            focal_buyer_index=args.focal_buyer_index,
         )
         result = run_all_tasks(config, dry_run=args.dry_run)
         print(json.dumps(result, ensure_ascii=False, indent=2))
@@ -134,6 +152,9 @@ def main() -> None:
         limit=args.limit,
         planner_checkpoint=args.planner_checkpoint,
         resume=not args.no_resume,
+        resume_from_jsonl=(
+            Path(args.resume_from_jsonl) if args.resume_from_jsonl else None
+        ),
     )
     result = run_single28(config, dry_run=args.dry_run)
     print(json.dumps(result, ensure_ascii=False, indent=2))

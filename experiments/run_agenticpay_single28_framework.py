@@ -311,11 +311,35 @@ def instrument_env(env: Any, capture: Dict[str, Any]) -> Any:
         if seller_action is None and len(args) > 1:
             seller_action = args[1]
         round_before = getattr(env, "current_round", None)
+        buyer_contract_extracted = extract_contract(
+            buyer_action if isinstance(buyer_action, str) else str(buyer_action or "")
+        )
+        seller_contract_extracted = extract_contract(
+            seller_action if isinstance(seller_action, str) else str(seller_action or "")
+        )
         buyer_price_extracted = extract_price_from_env(env, buyer_action)
         seller_price_extracted = extract_price_from_env(env, seller_action)
 
         observation, reward, terminated, truncated, info = original_step(*args, **kwargs)
         info = info or {}
+        # Several upstream single28 example scripts omit the canonical contract
+        # fields from their saved summary even though the unchanged benchmark
+        # environment stores them in ``env.state.metadata``.  Capture that
+        # terminal state for diagnostics only.  This does not alter agreement,
+        # reward, scorer, seller, or any action passed to the environment.
+        state = getattr(env, "state", None)
+        metadata = getattr(state, "metadata", None)
+        if isinstance(metadata, dict):
+            for key in (
+                "agreed_contract",
+                "buyer_contract",
+                "seller_contract",
+                "buyer_utility",
+                "seller_utility",
+            ):
+                value = metadata.get(key)
+                if value is not None:
+                    capture.setdefault("env", {})[key] = safe_jsonable(value)
         round_after = number_or_none(info.get("round"))
         if round_after is None:
             round_after = number_or_none(getattr(env, "current_round", None))
@@ -326,6 +350,8 @@ def instrument_env(env: Any, capture: Dict[str, Any]) -> Any:
             "round": int(round_after) if round_after is not None else len(capture.setdefault("rounds", [])) + 1,
             "buyer_action": buyer_action,
             "seller_action": seller_action,
+            "buyer_contract_extracted": buyer_contract_extracted,
+            "seller_contract_extracted": seller_contract_extracted,
             "buyer_price_extracted": buyer_price_extracted,
             "seller_price_extracted": seller_price_extracted,
             "buyer_price_state": state_number_attr(env, "buyer_price"),
@@ -345,6 +371,48 @@ def instrument_env(env: Any, capture: Dict[str, Any]) -> Any:
 
     env.step = instrumented_step
     return env
+
+
+def instrument_module_environment_constructors(
+    module: Any, capture: Dict[str, Any]
+) -> int:
+    """Wrap AgenticPay environment classes imported by an example module.
+
+    Most upstream ``agenticpay/examples`` scripts instantiate a concrete
+    ``agenticpay.envs.*`` class directly instead of calling Gymnasium ``make``.
+    Replacing only the module-local constructor keeps upstream source and class
+    implementations untouched while enabling the same read-only trajectory
+    capture used by the single28 runner.
+    """
+
+    wrapped = 0
+    for name, value in list(vars(module).items()):
+        if not isinstance(value, type):
+            continue
+        if not str(getattr(value, "__module__", "")).startswith("agenticpay.envs."):
+            continue
+        if not callable(getattr(value, "step", None)):
+            continue
+        original_class = value
+
+        # Keep the replacement a real subclass rather than a plain factory
+        # function.  Several upstream multi-product/multi-seller examples call
+        # environment helpers through the module-local class object, e.g.
+        # ``Task3Env.resolve_selected_seller(...)``.  A function wrapper can
+        # construct the environment but destroys those static/class methods,
+        # causing deterministic AttributeError failures after negotiation.
+        class InstrumentedEnvironment(original_class):  # type: ignore[misc, valid-type]
+            def __init__(self, *args: Any, **kwargs: Any) -> None:
+                super().__init__(*args, **kwargs)
+                instrument_env(self, capture)
+
+        InstrumentedEnvironment.__name__ = original_class.__name__
+        InstrumentedEnvironment.__qualname__ = original_class.__qualname__
+        InstrumentedEnvironment.__doc__ = original_class.__doc__
+        InstrumentedEnvironment.__module__ = original_class.__module__
+        setattr(module, name, InstrumentedEnvironment)
+        wrapped += 1
+    return wrapped
 
 
 class ValidatedSellerAgent(BaseAgent):
@@ -685,6 +753,16 @@ Previous invalid response:
 
 
 def _term_weight(weights: Dict[str, Any], term: str, value: Any) -> float:
+    """Read a discrete utility weight before or after JSON serialization.
+
+    AgenticPay task modules may use native boolean keys (``True``/``False``),
+    while the runner persists ``contract_config`` as JSON where those keys
+    become lower-case strings (``"true"``/``"false"``).  Diagnostics must
+    therefore normalize the lookup key; otherwise boolean contract terms are
+    silently assigned zero utility even though the environment scorer counted
+    them.  This helper is read-only instrumentation and is not used to choose
+    a negotiation action.
+    """
     term_weights = weights.get(term, {}) if isinstance(weights, dict) else {}
     if not isinstance(term_weights, dict):
         return 0.0
@@ -693,6 +771,9 @@ def _term_weight(weights: Dict[str, Any], term: str, value: Any) -> float:
     string_value = str(value)
     if string_value in term_weights:
         return float(term_weights.get(string_value, 0.0))
+    lower_value = string_value.lower()
+    if lower_value in term_weights:
+        return float(term_weights.get(lower_value, 0.0))
     return 0.0
 
 
@@ -718,6 +799,7 @@ def patch_module(
     seller_client: Optional[ModelClient] = None,
     seller_model_alias: Optional[str] = None,
     planner_checkpoint: Optional[str] = None,
+    focal_buyer_index: Optional[int] = None,
 ) -> None:
     # Each AgenticPay example imports a concrete model class and constructs its
     # own BuyerAgent/SellerAgent. Monkeypatching lets us preserve the original
@@ -728,6 +810,19 @@ def patch_module(
 
     buyer_client = buyer_client or client
     seller_client = seller_client or client
+    if focal_buyer_index is not None and focal_buyer_index < 1:
+        raise ValueError("focal_buyer_index must be a 1-based positive integer")
+    buyer_patch_audit: Dict[str, Any] = {
+        "mode": "focal_only" if focal_buyer_index is not None else "all_buyers",
+        "focal_buyer_index": focal_buyer_index,
+        "buyer_instances_created": 0,
+        "variant_buyer_instances": 0,
+        "native_control_buyer_instances": 0,
+    }
+    # Expose an observation-only audit object to the all-task runner.  The
+    # object is mutated in-place as the upstream script constructs BuyerAgent
+    # instances, so every result can prove which buyers were actually swapped.
+    module._negotiation_buyer_patch_audit = buyer_patch_audit
 
     def model_factory(*_args: Any, **_kwargs: Any) -> ModelClient:
         # The upstream examples often instantiate one model and pass it to both
@@ -746,8 +841,40 @@ def patch_module(
         updated["model"] = role_client
         return args, updated
 
-    def buyer_factory(*args: Any, **kwargs: Any) -> BaseAgent:
+    def buyer_factory(
+        *args: Any,
+        _requested_variant: str = variant,
+        **kwargs: Any,
+    ) -> BaseAgent:
+        buyer_patch_audit["buyer_instances_created"] += 1
+        buyer_index = int(buyer_patch_audit["buyer_instances_created"])
         args, kwargs = _kwargs_with_model(args, kwargs, buyer_client)
+        if focal_buyer_index is not None and buyer_index != focal_buyer_index:
+            # Strict focal-only evaluation: non-focal buyers use the unmodified
+            # upstream AgenticPay BuyerAgent with the same model endpoint.
+            buyer_patch_audit["native_control_buyer_instances"] += 1
+            return BuyerAgent(*args, **kwargs)
+        buyer_patch_audit["variant_buyer_instances"] += 1
+        # V54--V56 are one-change descendants. Normalize inherited planner
+        # behavior here instead of copying their parent into every historical
+        # feature set below; the outer variant used for result attribution is
+        # untouched.
+        variant = {
+            "universal_framework_v54_role_conditioned_partner_ir_reserve":
+                "universal_framework_v53_public_factual_router",
+            "universal_framework_v55_multiseller_protocol_safe":
+                "universal_framework_v37_rolling_public_contract_state",
+            "universal_framework_v56_deadline_aware_settlement":
+                "universal_framework_v37_rolling_public_contract_state",
+            "universal_framework_v57_stagnation_financed_settlement":
+                "universal_framework_v37_rolling_public_contract_state",
+            "universal_framework_v58_rejection_aware_settlement":
+                "universal_framework_v37_rolling_public_contract_state",
+            "universal_framework_v59_scoped_rejection_settlement":
+                "universal_framework_v37_rolling_public_contract_state",
+            "universal_framework_v60_resilient_multiseller_settlement":
+                "universal_framework_v37_rolling_public_contract_state",
+        }.get(_requested_variant, _requested_variant)
         if variant == "repo_native":
             return BuyerAgent(*args, **kwargs)
         if variant in BASELINE_BUYER_VARIANTS:
@@ -788,6 +915,42 @@ def patch_module(
                     "universal_framework_v12_reward_labeled_residual_awr",
                     "universal_framework_v13_reward_labeled_lcb",
                     "universal_framework_v14_evidence_gated_lcb",
+                    "universal_framework_v15_robust_contract_settlement_validator",
+                    "universal_framework_v16_risk_adaptive_settlement_validator",
+                    "universal_framework_v17_validated_calibrated_opening",
+                    "universal_framework_v18_public_counteroffer_term_validator",
+                    "universal_framework_v19_minimal_buyer_ir_term_repair",
+                    "universal_framework_v20_semantic_low_burden_endpoint_opening",
+                    "universal_framework_v21_public_only_burden_selector",
+                    "universal_framework_v25_classifier_composed_opening",
+                    "universal_framework_v26_rejectable_classifier_guard",
+                    "universal_framework_v27_classifier_guard_buffer_1pct",
+                    "universal_framework_v28_classifier_guard_buffer_2pct",
+                    "universal_framework_v29_semantic_risk_settlement",
+                    "universal_framework_v30_evidence_gated_settlement_frontier",
+                    "universal_framework_v31_bounded_compensated_active_frontier",
+                    "universal_framework_v32_noncrossing_single_issue_frontier",
+                    "universal_framework_v33_public_response_settlement_latch",
+                    "universal_framework_v34_post_probe_minimal_buyer_ir_repair",
+                    "universal_framework_v35_domain_aware_post_probe_repair",
+                    "universal_framework_v36_publicly_compensated_post_probe_repair",
+                    "universal_framework_v37_rolling_public_contract_state",
+                    "universal_framework_v38_utility_preserving_multiissue",
+                    "universal_framework_v39_confirmed_tradeoff_settlement",
+                    "universal_framework_v40_stagnation_trade_ledger",
+                    "universal_framework_v41_compensated_conflict_opening",
+                    "universal_framework_v42_sequential_semantic_confirmation",
+                    "universal_framework_v43_raw_semantic_confirmation",
+                    "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                        "universal_framework_v52_learned_issue_role_gate",
+                        "universal_framework_v53_public_factual_router",
                 },
                 terminal_accept_guard=variant in {
                     "universal_framework_v4_terminal_accept_guard",
@@ -801,6 +964,42 @@ def patch_module(
                     "universal_framework_v12_reward_labeled_residual_awr",
                     "universal_framework_v13_reward_labeled_lcb",
                     "universal_framework_v14_evidence_gated_lcb",
+                    "universal_framework_v15_robust_contract_settlement_validator",
+                    "universal_framework_v16_risk_adaptive_settlement_validator",
+                    "universal_framework_v17_validated_calibrated_opening",
+                    "universal_framework_v18_public_counteroffer_term_validator",
+                    "universal_framework_v19_minimal_buyer_ir_term_repair",
+                    "universal_framework_v20_semantic_low_burden_endpoint_opening",
+                    "universal_framework_v21_public_only_burden_selector",
+                    "universal_framework_v25_classifier_composed_opening",
+                    "universal_framework_v26_rejectable_classifier_guard",
+                    "universal_framework_v27_classifier_guard_buffer_1pct",
+                    "universal_framework_v28_classifier_guard_buffer_2pct",
+                    "universal_framework_v29_semantic_risk_settlement",
+                    "universal_framework_v30_evidence_gated_settlement_frontier",
+                    "universal_framework_v31_bounded_compensated_active_frontier",
+                    "universal_framework_v32_noncrossing_single_issue_frontier",
+                    "universal_framework_v33_public_response_settlement_latch",
+                    "universal_framework_v34_post_probe_minimal_buyer_ir_repair",
+                    "universal_framework_v35_domain_aware_post_probe_repair",
+                    "universal_framework_v36_publicly_compensated_post_probe_repair",
+                    "universal_framework_v37_rolling_public_contract_state",
+                    "universal_framework_v38_utility_preserving_multiissue",
+                    "universal_framework_v39_confirmed_tradeoff_settlement",
+                    "universal_framework_v40_stagnation_trade_ledger",
+                    "universal_framework_v41_compensated_conflict_opening",
+                    "universal_framework_v42_sequential_semantic_confirmation",
+                    "universal_framework_v43_raw_semantic_confirmation",
+                    "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                        "universal_framework_v52_learned_issue_role_gate",
+                        "universal_framework_v53_public_factual_router",
                 },
                 verified_response_frontier=(
                     variant in {
@@ -822,6 +1021,40 @@ def patch_module(
                         "universal_framework_v9_llm_proposal_candidate",
                         "universal_framework_v10_belief_grounded_candidate_arbitrator",
                         "universal_framework_v11_safe_improvement_arbitrator",
+                        "universal_framework_v17_validated_calibrated_opening",
+                        "universal_framework_v18_public_counteroffer_term_validator",
+                        "universal_framework_v19_minimal_buyer_ir_term_repair",
+                        "universal_framework_v20_semantic_low_burden_endpoint_opening",
+                        "universal_framework_v21_public_only_burden_selector",
+                        "universal_framework_v25_classifier_composed_opening",
+                        "universal_framework_v26_rejectable_classifier_guard",
+                        "universal_framework_v27_classifier_guard_buffer_1pct",
+                        "universal_framework_v28_classifier_guard_buffer_2pct",
+                        "universal_framework_v29_semantic_risk_settlement",
+                        "universal_framework_v30_evidence_gated_settlement_frontier",
+                        "universal_framework_v31_bounded_compensated_active_frontier",
+                        "universal_framework_v32_noncrossing_single_issue_frontier",
+                        "universal_framework_v33_public_response_settlement_latch",
+                        "universal_framework_v34_post_probe_minimal_buyer_ir_repair",
+                        "universal_framework_v35_domain_aware_post_probe_repair",
+                        "universal_framework_v36_publicly_compensated_post_probe_repair",
+                        "universal_framework_v37_rolling_public_contract_state",
+                        "universal_framework_v38_utility_preserving_multiissue",
+                        "universal_framework_v39_confirmed_tradeoff_settlement",
+                        "universal_framework_v40_stagnation_trade_ledger",
+                        "universal_framework_v41_compensated_conflict_opening",
+                        "universal_framework_v42_sequential_semantic_confirmation",
+                        "universal_framework_v43_raw_semantic_confirmation",
+                        "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                        "universal_framework_v52_learned_issue_role_gate",
+                        "universal_framework_v53_public_factual_router",
                     }
                 ),
                 belief_grounded_candidate_arbitrator=(
@@ -838,6 +1071,42 @@ def patch_module(
                         "universal_framework_v12_reward_labeled_residual_awr",
                         "universal_framework_v13_reward_labeled_lcb",
                         "universal_framework_v14_evidence_gated_lcb",
+                        "universal_framework_v15_robust_contract_settlement_validator",
+                        "universal_framework_v16_risk_adaptive_settlement_validator",
+                        "universal_framework_v17_validated_calibrated_opening",
+                        "universal_framework_v18_public_counteroffer_term_validator",
+                        "universal_framework_v19_minimal_buyer_ir_term_repair",
+                        "universal_framework_v20_semantic_low_burden_endpoint_opening",
+                        "universal_framework_v21_public_only_burden_selector",
+                        "universal_framework_v25_classifier_composed_opening",
+                        "universal_framework_v26_rejectable_classifier_guard",
+                        "universal_framework_v27_classifier_guard_buffer_1pct",
+                        "universal_framework_v28_classifier_guard_buffer_2pct",
+                        "universal_framework_v29_semantic_risk_settlement",
+                        "universal_framework_v30_evidence_gated_settlement_frontier",
+                        "universal_framework_v31_bounded_compensated_active_frontier",
+                        "universal_framework_v32_noncrossing_single_issue_frontier",
+                        "universal_framework_v33_public_response_settlement_latch",
+                        "universal_framework_v34_post_probe_minimal_buyer_ir_repair",
+                        "universal_framework_v35_domain_aware_post_probe_repair",
+                        "universal_framework_v36_publicly_compensated_post_probe_repair",
+                        "universal_framework_v37_rolling_public_contract_state",
+                        "universal_framework_v38_utility_preserving_multiissue",
+                        "universal_framework_v39_confirmed_tradeoff_settlement",
+                        "universal_framework_v40_stagnation_trade_ledger",
+                        "universal_framework_v41_compensated_conflict_opening",
+                        "universal_framework_v42_sequential_semantic_confirmation",
+                        "universal_framework_v43_raw_semantic_confirmation",
+                        "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                        "universal_framework_v52_learned_issue_role_gate",
+                        "universal_framework_v53_public_factual_router",
                     }
                 ),
                 reward_labeled_residual_safe_gate=(
@@ -845,6 +1114,581 @@ def patch_module(
                 ),
                 reward_labeled_residual_evidence_gate=(
                     variant == "universal_framework_v14_evidence_gated_lcb"
+                ),
+                robust_contract_settlement_validator=(
+                    variant
+                    == "universal_framework_v15_robust_contract_settlement_validator"
+                ),
+                adaptive_contract_settlement_validator=(
+                    variant in {
+                        "universal_framework_v16_risk_adaptive_settlement_validator",
+                        "universal_framework_v17_validated_calibrated_opening",
+                        "universal_framework_v18_public_counteroffer_term_validator",
+                        "universal_framework_v19_minimal_buyer_ir_term_repair",
+                        "universal_framework_v20_semantic_low_burden_endpoint_opening",
+                        "universal_framework_v21_public_only_burden_selector",
+                        "universal_framework_v25_classifier_composed_opening",
+                        "universal_framework_v26_rejectable_classifier_guard",
+                        "universal_framework_v27_classifier_guard_buffer_1pct",
+                        "universal_framework_v28_classifier_guard_buffer_2pct",
+                        "universal_framework_v29_semantic_risk_settlement",
+                        "universal_framework_v30_evidence_gated_settlement_frontier",
+                    }
+                ),
+                calibrated_opening_candidate=(
+                    variant
+                    in {
+                        "universal_framework_v17_validated_calibrated_opening",
+                        "universal_framework_v18_public_counteroffer_term_validator",
+                        "universal_framework_v19_minimal_buyer_ir_term_repair",
+                        "universal_framework_v20_semantic_low_burden_endpoint_opening",
+                        "universal_framework_v21_public_only_burden_selector",
+                        "universal_framework_v25_classifier_composed_opening",
+                        "universal_framework_v26_rejectable_classifier_guard",
+                        "universal_framework_v27_classifier_guard_buffer_1pct",
+                        "universal_framework_v28_classifier_guard_buffer_2pct",
+                        "universal_framework_v29_semantic_risk_settlement",
+                        "universal_framework_v30_evidence_gated_settlement_frontier",
+                        "universal_framework_v31_bounded_compensated_active_frontier",
+                        "universal_framework_v32_noncrossing_single_issue_frontier",
+                        "universal_framework_v33_public_response_settlement_latch",
+                        "universal_framework_v34_post_probe_minimal_buyer_ir_repair",
+                        "universal_framework_v35_domain_aware_post_probe_repair",
+                        "universal_framework_v36_publicly_compensated_post_probe_repair",
+                        "universal_framework_v37_rolling_public_contract_state",
+                        "universal_framework_v38_utility_preserving_multiissue",
+                        "universal_framework_v39_confirmed_tradeoff_settlement",
+                        "universal_framework_v40_stagnation_trade_ledger",
+                        "universal_framework_v41_compensated_conflict_opening",
+                        "universal_framework_v42_sequential_semantic_confirmation",
+                        "universal_framework_v43_raw_semantic_confirmation",
+                        "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                        "universal_framework_v52_learned_issue_role_gate",
+                        "universal_framework_v53_public_factual_router",
+                    }
+                ),
+                public_counteroffer_term_validator=(
+                    variant
+                    == "universal_framework_v18_public_counteroffer_term_validator"
+                ),
+                minimal_buyer_ir_term_repair_validator=(
+                    variant in {
+                        "universal_framework_v19_minimal_buyer_ir_term_repair",
+                        "universal_framework_v20_semantic_low_burden_endpoint_opening",
+                        "universal_framework_v21_public_only_burden_selector",
+                        "universal_framework_v25_classifier_composed_opening",
+                        "universal_framework_v26_rejectable_classifier_guard",
+                        "universal_framework_v27_classifier_guard_buffer_1pct",
+                        "universal_framework_v28_classifier_guard_buffer_2pct",
+                    }
+                ),
+                seller_burden_endpoint_opening=(
+                    variant in {
+                        "universal_framework_v20_semantic_low_burden_endpoint_opening",
+                        "universal_framework_v21_public_only_burden_selector",
+                        "universal_framework_v25_classifier_composed_opening",
+                        "universal_framework_v26_rejectable_classifier_guard",
+                        "universal_framework_v27_classifier_guard_buffer_1pct",
+                        "universal_framework_v28_classifier_guard_buffer_2pct",
+                        "universal_framework_v29_semantic_risk_settlement",
+                        "universal_framework_v30_evidence_gated_settlement_frontier",
+                        "universal_framework_v31_bounded_compensated_active_frontier",
+                        "universal_framework_v32_noncrossing_single_issue_frontier",
+                        "universal_framework_v33_public_response_settlement_latch",
+                        "universal_framework_v34_post_probe_minimal_buyer_ir_repair",
+                        "universal_framework_v35_domain_aware_post_probe_repair",
+                        "universal_framework_v36_publicly_compensated_post_probe_repair",
+                        "universal_framework_v37_rolling_public_contract_state",
+                        "universal_framework_v38_utility_preserving_multiissue",
+                        "universal_framework_v39_confirmed_tradeoff_settlement",
+                        "universal_framework_v40_stagnation_trade_ledger",
+                        "universal_framework_v41_compensated_conflict_opening",
+                        "universal_framework_v42_sequential_semantic_confirmation",
+                        "universal_framework_v43_raw_semantic_confirmation",
+                        "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                        "universal_framework_v52_learned_issue_role_gate",
+                        "universal_framework_v53_public_factual_router",
+                    }
+                ),
+                public_only_burden_selector=(
+                    variant
+                    == "universal_framework_v21_public_only_burden_selector"
+                ),
+                ontological_issue_classifier_opening=(
+                    variant in {
+                        "universal_framework_v25_classifier_composed_opening",
+                        "universal_framework_v26_rejectable_classifier_guard",
+                        "universal_framework_v27_classifier_guard_buffer_1pct",
+                        "universal_framework_v28_classifier_guard_buffer_2pct",
+                        "universal_framework_v29_semantic_risk_settlement",
+                        "universal_framework_v30_evidence_gated_settlement_frontier",
+                        "universal_framework_v31_bounded_compensated_active_frontier",
+                        "universal_framework_v32_noncrossing_single_issue_frontier",
+                        "universal_framework_v33_public_response_settlement_latch",
+                        "universal_framework_v34_post_probe_minimal_buyer_ir_repair",
+                        "universal_framework_v35_domain_aware_post_probe_repair",
+                        "universal_framework_v36_publicly_compensated_post_probe_repair",
+                        "universal_framework_v37_rolling_public_contract_state",
+                        "universal_framework_v38_utility_preserving_multiissue",
+                        "universal_framework_v39_confirmed_tradeoff_settlement",
+                        "universal_framework_v40_stagnation_trade_ledger",
+                        "universal_framework_v41_compensated_conflict_opening",
+                        "universal_framework_v42_sequential_semantic_confirmation",
+                        "universal_framework_v43_raw_semantic_confirmation",
+                        "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                        "universal_framework_v52_learned_issue_role_gate",
+                        "universal_framework_v53_public_factual_router",
+                    }
+                ),
+                ontological_issue_classifier_guard=(
+                    variant in {
+                        "universal_framework_v26_rejectable_classifier_guard",
+                        "universal_framework_v27_classifier_guard_buffer_1pct",
+                        "universal_framework_v28_classifier_guard_buffer_2pct",
+                        "universal_framework_v29_semantic_risk_settlement",
+                        "universal_framework_v30_evidence_gated_settlement_frontier",
+                        "universal_framework_v31_bounded_compensated_active_frontier",
+                        "universal_framework_v32_noncrossing_single_issue_frontier",
+                        "universal_framework_v33_public_response_settlement_latch",
+                        "universal_framework_v34_post_probe_minimal_buyer_ir_repair",
+                        "universal_framework_v35_domain_aware_post_probe_repair",
+                        "universal_framework_v36_publicly_compensated_post_probe_repair",
+                        "universal_framework_v37_rolling_public_contract_state",
+                        "universal_framework_v38_utility_preserving_multiissue",
+                        "universal_framework_v39_confirmed_tradeoff_settlement",
+                        "universal_framework_v40_stagnation_trade_ledger",
+                        "universal_framework_v41_compensated_conflict_opening",
+                        "universal_framework_v42_sequential_semantic_confirmation",
+                        "universal_framework_v43_raw_semantic_confirmation",
+                        "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                        "universal_framework_v52_learned_issue_role_gate",
+                        "universal_framework_v53_public_factual_router",
+                    }
+                ),
+                classifier_settlement_buffer_fraction=(
+                    0.01
+                    if variant in {
+                        "universal_framework_v27_classifier_guard_buffer_1pct",
+                        "universal_framework_v29_semantic_risk_settlement",
+                        "universal_framework_v30_evidence_gated_settlement_frontier",
+                        "universal_framework_v31_bounded_compensated_active_frontier",
+                        "universal_framework_v32_noncrossing_single_issue_frontier",
+                        "universal_framework_v33_public_response_settlement_latch",
+                        "universal_framework_v34_post_probe_minimal_buyer_ir_repair",
+                        "universal_framework_v35_domain_aware_post_probe_repair",
+                        "universal_framework_v36_publicly_compensated_post_probe_repair",
+                        "universal_framework_v37_rolling_public_contract_state",
+                        "universal_framework_v38_utility_preserving_multiissue",
+                        "universal_framework_v39_confirmed_tradeoff_settlement",
+                        "universal_framework_v40_stagnation_trade_ledger",
+                        "universal_framework_v41_compensated_conflict_opening",
+                        "universal_framework_v42_sequential_semantic_confirmation",
+                        "universal_framework_v43_raw_semantic_confirmation",
+                        "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                        "universal_framework_v52_learned_issue_role_gate",
+                        "universal_framework_v53_public_factual_router",
+                    }
+                    else 0.02
+                    if variant == "universal_framework_v28_classifier_guard_buffer_2pct"
+                    else 0.0
+                ),
+                classifier_settlement_semantic_risk_multiplier=(
+                    0.04
+                    if variant in {
+                        "universal_framework_v29_semantic_risk_settlement",
+                        "universal_framework_v30_evidence_gated_settlement_frontier",
+                        "universal_framework_v31_bounded_compensated_active_frontier",
+                        "universal_framework_v32_noncrossing_single_issue_frontier",
+                        "universal_framework_v33_public_response_settlement_latch",
+                        "universal_framework_v34_post_probe_minimal_buyer_ir_repair",
+                        "universal_framework_v35_domain_aware_post_probe_repair",
+                        "universal_framework_v36_publicly_compensated_post_probe_repair",
+                        "universal_framework_v37_rolling_public_contract_state",
+                        "universal_framework_v38_utility_preserving_multiissue",
+                        "universal_framework_v39_confirmed_tradeoff_settlement",
+                        "universal_framework_v40_stagnation_trade_ledger",
+                        "universal_framework_v41_compensated_conflict_opening",
+                        "universal_framework_v42_sequential_semantic_confirmation",
+                        "universal_framework_v43_raw_semantic_confirmation",
+                        "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                        "universal_framework_v52_learned_issue_role_gate",
+                        "universal_framework_v53_public_factual_router",
+                    }
+                    else 0.0
+                ),
+                evidence_gated_settlement_frontier=(
+                    variant in {
+                        "universal_framework_v30_evidence_gated_settlement_frontier",
+                        "universal_framework_v31_bounded_compensated_active_frontier",
+                        "universal_framework_v32_noncrossing_single_issue_frontier",
+                        "universal_framework_v33_public_response_settlement_latch",
+                        "universal_framework_v34_post_probe_minimal_buyer_ir_repair",
+                        "universal_framework_v35_domain_aware_post_probe_repair",
+                        "universal_framework_v36_publicly_compensated_post_probe_repair",
+                        "universal_framework_v37_rolling_public_contract_state",
+                        "universal_framework_v38_utility_preserving_multiissue",
+                        "universal_framework_v39_confirmed_tradeoff_settlement",
+                        "universal_framework_v40_stagnation_trade_ledger",
+                        "universal_framework_v41_compensated_conflict_opening",
+                        "universal_framework_v42_sequential_semantic_confirmation",
+                        "universal_framework_v43_raw_semantic_confirmation",
+                        "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                        "universal_framework_v52_learned_issue_role_gate",
+                        "universal_framework_v53_public_factual_router",
+                    }
+                ),
+                bounded_compensated_active_frontier=(
+                    variant in {
+                        "universal_framework_v31_bounded_compensated_active_frontier",
+                        "universal_framework_v32_noncrossing_single_issue_frontier",
+                        "universal_framework_v33_public_response_settlement_latch",
+                        "universal_framework_v34_post_probe_minimal_buyer_ir_repair",
+                        "universal_framework_v35_domain_aware_post_probe_repair",
+                        "universal_framework_v36_publicly_compensated_post_probe_repair",
+                        "universal_framework_v37_rolling_public_contract_state",
+                        "universal_framework_v38_utility_preserving_multiissue",
+                        "universal_framework_v39_confirmed_tradeoff_settlement",
+                        "universal_framework_v40_stagnation_trade_ledger",
+                        "universal_framework_v41_compensated_conflict_opening",
+                        "universal_framework_v42_sequential_semantic_confirmation",
+                        "universal_framework_v43_raw_semantic_confirmation",
+                        "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                        "universal_framework_v52_learned_issue_role_gate",
+                        "universal_framework_v53_public_factual_router",
+                    }
+                ),
+                noncrossing_single_issue_frontier=(
+                    variant in {
+                        "universal_framework_v32_noncrossing_single_issue_frontier",
+                        "universal_framework_v33_public_response_settlement_latch",
+                        "universal_framework_v34_post_probe_minimal_buyer_ir_repair",
+                        "universal_framework_v35_domain_aware_post_probe_repair",
+                        "universal_framework_v36_publicly_compensated_post_probe_repair",
+                        "universal_framework_v37_rolling_public_contract_state",
+                        "universal_framework_v38_utility_preserving_multiissue",
+                        "universal_framework_v39_confirmed_tradeoff_settlement",
+                        "universal_framework_v40_stagnation_trade_ledger",
+                        "universal_framework_v41_compensated_conflict_opening",
+                        "universal_framework_v42_sequential_semantic_confirmation",
+                        "universal_framework_v43_raw_semantic_confirmation",
+                        "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                        "universal_framework_v52_learned_issue_role_gate",
+                        "universal_framework_v53_public_factual_router",
+                    }
+                ),
+                public_response_settlement_latch=(
+                    variant in {
+                        "universal_framework_v33_public_response_settlement_latch",
+                        "universal_framework_v34_post_probe_minimal_buyer_ir_repair",
+                        "universal_framework_v35_domain_aware_post_probe_repair",
+                        "universal_framework_v36_publicly_compensated_post_probe_repair",
+                        "universal_framework_v37_rolling_public_contract_state",
+                        "universal_framework_v38_utility_preserving_multiissue",
+                        "universal_framework_v39_confirmed_tradeoff_settlement",
+                        "universal_framework_v40_stagnation_trade_ledger",
+                        "universal_framework_v41_compensated_conflict_opening",
+                        "universal_framework_v42_sequential_semantic_confirmation",
+                        "universal_framework_v43_raw_semantic_confirmation",
+                        "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                        "universal_framework_v52_learned_issue_role_gate",
+                        "universal_framework_v53_public_factual_router",
+                    }
+                ),
+                post_probe_minimal_buyer_ir_repair=(
+                    variant in {
+                        "universal_framework_v34_post_probe_minimal_buyer_ir_repair",
+                        "universal_framework_v35_domain_aware_post_probe_repair",
+                        "universal_framework_v36_publicly_compensated_post_probe_repair",
+                        "universal_framework_v37_rolling_public_contract_state",
+                        "universal_framework_v38_utility_preserving_multiissue",
+                        "universal_framework_v39_confirmed_tradeoff_settlement",
+                        "universal_framework_v40_stagnation_trade_ledger",
+                        "universal_framework_v41_compensated_conflict_opening",
+                        "universal_framework_v42_sequential_semantic_confirmation",
+                        "universal_framework_v43_raw_semantic_confirmation",
+                        "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                        "universal_framework_v52_learned_issue_role_gate",
+                        "universal_framework_v53_public_factual_router",
+                    }
+                ),
+                post_probe_domain_aware_repair_grid=(
+                    variant in {
+                        "universal_framework_v35_domain_aware_post_probe_repair",
+                        "universal_framework_v36_publicly_compensated_post_probe_repair",
+                        "universal_framework_v37_rolling_public_contract_state",
+                        "universal_framework_v38_utility_preserving_multiissue",
+                        "universal_framework_v39_confirmed_tradeoff_settlement",
+                        "universal_framework_v40_stagnation_trade_ledger",
+                        "universal_framework_v41_compensated_conflict_opening",
+                        "universal_framework_v42_sequential_semantic_confirmation",
+                        "universal_framework_v43_raw_semantic_confirmation",
+                        "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                        "universal_framework_v52_learned_issue_role_gate",
+                        "universal_framework_v53_public_factual_router",
+                    }
+                ),
+                post_repair_public_compensation=(
+                    variant in {
+                        "universal_framework_v36_publicly_compensated_post_probe_repair",
+                        "universal_framework_v37_rolling_public_contract_state",
+                        "universal_framework_v38_utility_preserving_multiissue",
+                        "universal_framework_v39_confirmed_tradeoff_settlement",
+                        "universal_framework_v40_stagnation_trade_ledger",
+                        "universal_framework_v41_compensated_conflict_opening",
+                        "universal_framework_v42_sequential_semantic_confirmation",
+                        "universal_framework_v43_raw_semantic_confirmation",
+                        "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                        "universal_framework_v52_learned_issue_role_gate",
+                        "universal_framework_v53_public_factual_router",
+                    }
+                ),
+                rolling_public_contract_state=(
+                    variant in {
+                        "universal_framework_v37_rolling_public_contract_state",
+                        "universal_framework_v38_utility_preserving_multiissue",
+                        "universal_framework_v39_confirmed_tradeoff_settlement",
+                        "universal_framework_v40_stagnation_trade_ledger",
+                        "universal_framework_v41_compensated_conflict_opening",
+                        "universal_framework_v42_sequential_semantic_confirmation",
+                        "universal_framework_v43_raw_semantic_confirmation",
+                        "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                        "universal_framework_v52_learned_issue_role_gate",
+                        "universal_framework_v53_public_factual_router",
+                    }
+                ),
+                utility_preserving_multiissue_guard=(
+                    variant in {
+                        "universal_framework_v38_utility_preserving_multiissue",
+                        "universal_framework_v39_confirmed_tradeoff_settlement",
+                    }
+                ),
+                single_protected_issue_opening=(
+                    variant == "universal_framework_v39_confirmed_tradeoff_settlement"
+                ),
+                semantic_departure_terminal_guard=(
+                    variant == "universal_framework_v39_confirmed_tradeoff_settlement"
+                ),
+                stagnation_trade_ledger_repair=(
+                    variant == "universal_framework_v40_stagnation_trade_ledger"
+                    or _requested_variant
+                    in {
+                        "universal_framework_v57_stagnation_financed_settlement",
+                        "universal_framework_v58_rejection_aware_settlement",
+                        "universal_framework_v59_scoped_rejection_settlement",
+                        "universal_framework_v60_resilient_multiseller_settlement",
+                    }
+                ),
+                compensated_conflict_opening=(
+                    variant in {
+                        "universal_framework_v41_compensated_conflict_opening",
+                        "universal_framework_v42_sequential_semantic_confirmation",
+                        "universal_framework_v43_raw_semantic_confirmation",
+                        "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                    }
+                ),
+                sequential_semantic_confirmation=(
+                    variant in {
+                        "universal_framework_v42_sequential_semantic_confirmation",
+                        "universal_framework_v43_raw_semantic_confirmation",
+                    }
+                ),
+                raw_semantic_confirmation_profile=(
+                    variant
+                    == "universal_framework_v43_raw_semantic_confirmation"
+                ),
+                risk_budgeted_semantic_confirmation=(
+                    variant in {
+                        "universal_framework_v44_risk_budgeted_confirmation",
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                    }
+                ),
+                one_shot_risk_budgeted_confirmation=(
+                    variant in {
+                        "universal_framework_v50_one_shot_confirmation",
+                        "universal_framework_v51_v37_isolated_one_shot_probe",
+                    }
+                ),
+                learned_issue_role_gate=(
+                    variant in {
+                        "universal_framework_v52_learned_issue_role_gate",
+                        "universal_framework_v53_public_factual_router",
+                    }
+                ),
+                public_factual_evidence_router=(
+                    variant == "universal_framework_v53_public_factual_router"
+                ),
+                deadline_aware_settlement=(
+                    _requested_variant in {
+                        "universal_framework_v56_deadline_aware_settlement",
+                        "universal_framework_v57_stagnation_financed_settlement",
+                        "universal_framework_v58_rejection_aware_settlement",
+                        "universal_framework_v59_scoped_rejection_settlement",
+                        "universal_framework_v60_resilient_multiseller_settlement",
+                    }
+                ),
+                resilient_multiseller_routing=(
+                    _requested_variant
+                    == "universal_framework_v60_resilient_multiseller_settlement"
+                ),
+                public_offer_recovery=(
+                    _requested_variant
+                    == "universal_framework_v60_resilient_multiseller_settlement"
+                ),
+                public_partner_ir_reserve_multiplier=(
+                    0.12
+                    if _requested_variant
+                    == "universal_framework_v54_role_conditioned_partner_ir_reserve"
+                    else 0.0
+                ),
+                rejection_tightened_semantic_confirmation=(
+                    variant in {
+                        "universal_framework_v45_rejection_tightened_confirmation",
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                    }
+                ),
+                ordinal_burden_frontier_confirmation=(
+                    variant in {
+                        "universal_framework_v46_ordinal_burden_frontier",
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                    }
+                ),
+                ordinal_frontier_only_when_raw_endpoint_non_ir=(
+                    variant in {
+                        "universal_framework_v47_ir_gated_ordinal_frontier",
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                    }
+                ),
+                ordinal_freeze_publicly_rejected_fields=(
+                    variant in {
+                        "universal_framework_v48_rejection_aware_ordinal_frontier",
+                        "universal_framework_v49_genuine_intermediate_frontier",
+                    }
+                    or _requested_variant
+                    in {
+                        "universal_framework_v58_rejection_aware_settlement",
+                        "universal_framework_v59_scoped_rejection_settlement",
+                        "universal_framework_v60_resilient_multiseller_settlement",
+                    }
+                ),
+                ordinal_intermediate_only=(
+                    variant
+                    == "universal_framework_v49_genuine_intermediate_frontier"
                 ),
                 planner_checkpoint=planner_checkpoint,
             )
@@ -887,6 +1731,8 @@ def patch_module(
             return instrument_env(env, trajectory_capture)
 
         module.make = make_factory
+    if trajectory_capture is not None:
+        instrument_module_environment_constructors(module, trajectory_capture)
     if hasattr(module, "get_model_name"):
         def role_model_name(model: Any) -> str:
             if model is seller_client:
@@ -983,8 +1829,12 @@ def calculate_contract_diagnostics(record: Dict[str, Any]) -> Dict[str, Any]:
         buyer_utility += float(buyer_prefs.get("continuous_weights", {}).get(term, 0.0)) * numeric_value
         seller_utility += float(seller_prefs.get("continuous_weights", {}).get(term, 0.0)) * numeric_value
     for term, value in discrete_terms.items():
-        buyer_utility += float(buyer_prefs.get("discrete_weights", {}).get(term, {}).get(value, 0.0))
-        seller_utility += float(seller_prefs.get("discrete_weights", {}).get(term, {}).get(value, 0.0))
+        buyer_utility += _term_weight(
+            buyer_prefs.get("discrete_weights", {}), term, value
+        )
+        seller_utility += _term_weight(
+            seller_prefs.get("discrete_weights", {}), term, value
+        )
 
     z_max = float(buyer_prefs.get("v_base", 0.0)) - float(seller_prefs.get("c_base", 0.0))
     for term, bounds in config.get("continuous_bounds", {}).items():
@@ -996,8 +1846,8 @@ def calculate_contract_diagnostics(record: Dict[str, Any]) -> Dict[str, Any]:
         best = None
         for opt in options:
             candidate = (
-                float(buyer_prefs.get("discrete_weights", {}).get(term, {}).get(opt, 0.0))
-                + float(seller_prefs.get("discrete_weights", {}).get(term, {}).get(opt, 0.0))
+                _term_weight(buyer_prefs.get("discrete_weights", {}), term, opt)
+                + _term_weight(seller_prefs.get("discrete_weights", {}), term, opt)
             )
             best = candidate if best is None else max(best, candidate)
         if best is not None:
@@ -1229,7 +2079,9 @@ def main() -> None:
                             result[key] = value
                     if trajectory_capture.get("rounds"):
                         result["rounds"] = trajectory_capture["rounds"]
-                        result["trajectory_capture_version"] = "single28_env_step_v1"
+                        result["trajectory_capture_version"] = (
+                            "single28_env_step_v2_terminal_contract"
+                        )
                     framework_traces = parse_framework_traces(log_text)
                     if framework_traces:
                         result["framework_traces"] = framework_traces
